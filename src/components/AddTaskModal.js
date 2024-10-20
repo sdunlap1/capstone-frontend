@@ -8,16 +8,29 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
   const [dueDate, setDueDate] = useState(selectedDate || ""); // Separate date input
   const [dueTime, setDueTime] = useState("12:00"); // Separate time input
   const [description, setDescription] = useState("");
+  const [titleError, setTitleError] = useState(false);
+  const [dueDateError, setDueDateError] = useState(false);
 
   const handleSave = async () => {
-    if (!dueDate) {
-      alert("Due Date is required");
-      return;
-    }
+    let hasError = false;
+
+    // Clear previous error messages
+    setTitleError(false);
+    setDueDateError(false);
+
+    // Check if title is empty
     if (!title.trim()) {
-      alert("Task title is required");
-      return;
+      setTitleError(true);
+      hasError = true;
     }
+
+    // Check if due date is empty
+    if (!dueDate) {
+      setDueDateError(true);
+      hasError = true;
+    }
+    if (hasError) return;
+
     // Get today's date in Los Angeles timezone, formatted as YYYY-MM-DD
     const today = new Date()
       .toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" })
@@ -78,33 +91,40 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
     <div className="modal top-modal">
       <div className="modal-content">
         <h2>Add New Task</h2>
-        <input
-          type="text"
-          placeholder="Task Name"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <label>Date</label>
+          <label>Task Title</label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className={titleError ? "input-error" : ""}
+          />
+          {titleError && (
+            <span className="error-text">Task title is required</span>
+          )}
+        <label>Due Date</label>
         <input
           type="date"
           value={dueDate}
           onChange={(e) => setDueDate(e.target.value)}
-          placeholder="Select due date"
+          className={dueDateError ? "input-error" : ""}
         />
-        <label>Time</label>
-        <input
-          type="time"
-          value={dueTime} // Separate time input
-          onChange={(e) => setDueTime(e.target.value)}
-        />
-        <textarea
-          placeholder="Task Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <button onClick={handleSave}>Save</button>
-        <button onClick={handleCancel}>Cancel</button>
-      </div>
+        {dueDateError && (
+          <span className="error-text">Due date is required</span>
+        )}
+      <label>Time</label>
+      <input
+        type="time"
+        value={dueTime} // Separate time input
+        onChange={(e) => setDueTime(e.target.value)}
+      />
+      <textarea
+        placeholder="Task Description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+      <button onClick={handleSave}>Save</button>
+      <button onClick={handleCancel}>Cancel</button>
+    </div>
     </div>
   );
 };

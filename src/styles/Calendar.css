@@ -69,6 +69,18 @@
   background-color: #ccc;
 }
 
+/* styling for input field errors */
+.input-error {
+  border-color: red;
+}
+
+.error-text {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 0.2rem;
+}
+
+/* overriding FC styling */
 .fc-addTaskButton-button, .fc-addProjectButton-button {
   background-color: blue !important;
   color: white !important;

@@ -10,6 +10,8 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [dueTime, setDueTime] = useState("12:00");
+  const [titleError, setTitleError] = useState(false);
+  const [dueDateError, setDueDateError] = useState(false);
 
   useEffect(() => {
     if (isOpen && event?.type === "task") {
@@ -43,14 +45,25 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
       alert("Task ID is missing. Cannot save changes.");
       return;
     }
+    
+    let hasError = false;
+
+    // Clear previous error messages
+    setTitleError(false);
+    setDueDateError(false);
+
+    // Check if title is empty
     if (!title.trim()) {
-      alert("Task title is required");
-      return;
+      setTitleError(true);
+      hasError = true;
     }
+
+    // Check if due date is empty
     if (!dueDate) {
-      alert("Due Date is required");
-      return;
+      setDueDateError(true);
+      hasError = true;
     }
+    if (hasError) return;
 
     // Combine the date and time inputs into a single ISO string
     const localDueDate = new Date(`${dueDate}T${dueTime}`);
@@ -135,13 +148,18 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
+        {titleError && (
+          <span className="error-text">Task title is required</span>
+        )}
         <label>Due Date</label>
         <input
           type="date"
           value={dueDate}
           onChange={(e) => setDueDate(e.target.value)}
         />
-
+        {dueDateError && (
+          <span className="error-text">Due date is required</span>
+        )}
         <label>Time</label>
         <input
           type="time"
@@ -153,9 +171,7 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <button onClick={handleSave}>
-          Save
-        </button>
+        <button onClick={handleSave}>Save</button>
         <button className="delete-button" onClick={handleDelete}>
           Delete
         </button>
