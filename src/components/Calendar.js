@@ -23,8 +23,12 @@ const Calendar = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   // State for tracking current view and date
-  const [currentView, setCurrentView] = useState(localStorage.getItem("calendarView") || "dayGridMonth");
-  const [currentDate, setCurrentDate] = useState(localStorage.getItem("calendarDate") || new Date().toISOString());
+  const [currentView, setCurrentView] = useState(
+    localStorage.getItem("calendarView") || "dayGridMonth"
+  );
+  const [currentDate, setCurrentDate] = useState(
+    localStorage.getItem("calendarDate") || new Date().toISOString()
+  );
 
   const calendarRef = useRef(null);
 
@@ -103,22 +107,22 @@ const Calendar = () => {
     fetchEvents();
   }, [token]);
 
- // Save view and date when the view or date changes
-const handleViewChange = (view) => {
-  // Check if calendarRef is initialized and not null
-  if (calendarRef.current) {
-    const calendarApi = calendarRef.current.getApi();
-    const activeDate = calendarApi.getDate(); // Get the active date (visible date)
+  // Save view and date when the view or date changes
+  const handleViewChange = (view) => {
+    // Check if calendarRef is initialized and not null
+    if (calendarRef.current) {
+      const calendarApi = calendarRef.current.getApi();
+      const activeDate = calendarApi.getDate(); // Get the active date (visible date)
 
-    setCurrentView(view);
-    setCurrentDate(activeDate.toISOString()); // Store the visible date
+      setCurrentView(view);
+      setCurrentDate(activeDate.toISOString()); // Store the visible date
 
-    localStorage.setItem("calendarView", view); // Save view type in localStorage
-    localStorage.setItem("calendarDate", activeDate.toISOString()); // Save visible date in localStorage
-  } else {
-    console.error("Calendar reference is not yet available");
-  }
-};
+      localStorage.setItem("calendarView", view); // Save view type in localStorage
+      localStorage.setItem("calendarDate", activeDate.toISOString()); // Save visible date in localStorage
+    } else {
+      console.error("Calendar reference is not yet available");
+    }
+  };
 
   const handleTaskAdded = () => {
     fetchEvents(); // Refresh events after adding a task
@@ -176,15 +180,23 @@ const handleViewChange = (view) => {
   const handleEventResize = async (resizeInfo) => {
     console.log("Event resized:", resizeInfo); // Add this log
     const { event } = resizeInfo;
-  
-    const updatedStart = event.start.toISOString();
-    const updatedEnd = event.end ? event.end.toISOString() : null;
-  
-    console.log("Updated start:", updatedStart);
-    console.log("Updated end:", updatedEnd);
-  
+
+    const updatedStart = event.start;
+    const updatedEnd = event.end ? event.end : updatedStart;
+
+    // Get today's date (set to midnight)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to midnight for accurate comparison
+
+    // Check if end date is in the past
+    if (updatedEnd < today) {
+      alert("Warning: The end date is in the past.");
+      // Optionally, you can prevent saving by returning here
+      // return;
+    }
+
     const projectId = event.extendedProps.project_id;
-  
+
     try {
       await axiosInstance.put(`/projects/${projectId}`, {
         start_date: updatedStart,
@@ -203,6 +215,15 @@ const handleViewChange = (view) => {
     const { id, title, extendedProps } = eventDropInfo.event;
     const newStartDate = eventDropInfo.event.start;
     const newEndDate = eventDropInfo.event.end;
+
+    // Get today's date (set to midnight)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to midnight for accurate comparison
+
+    // Check if new date is in the past
+    if (newStartDate < today) {
+      alert("Warning: The date is in the past.");
+    }
 
     try {
       if (extendedProps.type === "task") {
