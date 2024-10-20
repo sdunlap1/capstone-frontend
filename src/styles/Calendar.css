@@ -92,8 +92,12 @@
 .fc-today-button {
   background-color: red !important;
 }
+
+/* Use this styling for month view all other views are 
+handled in fetchTasks in Calendar.js */
 .fc-event.task-event {
-  background-color: darkblue; /* Ensure the background color is applied */
+  background-color: rgba(0, 0, 255, 0.5); 
+  border-color: rgba(0, 0, 255, 1);
   color: #FFF;
 }
 

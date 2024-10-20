@@ -5,6 +5,8 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import tippy from "tippy.js";
+import "tippy.js/dist/tippy.css";
 import axiosInstance from "../api/axiosInstance";
 import useAuth from "../hooks/useAuth";
 import AddTaskModal from "./AddTaskModal";
@@ -51,7 +53,8 @@ const Calendar = () => {
           description: task.description || "",
           type: "task",
           allDay: false,
-          backgroundColor: "blue",
+          backgroundColor: "rgba(0, 0, 255, 0.5",
+          borderColor: "rgba(0, 0, 255, 1)",
           classNames: ["task-event"],
         }));
         setEvents((prevEvents) => [...prevEvents, ...taskEvents]); // Merge with existing events
@@ -264,6 +267,42 @@ const Calendar = () => {
       eventDropInfo.revert();
     }
   };
+  // Handles when a user hovers over a task or project
+  const handleEventMouseEnter = (info) => {
+    const { title, extendedProps, start, end } = info.event;
+
+    // Format start and end dates
+    const startDate = new Date(start).toLocaleDateString("en-US");
+    const endDate = end ? new Date(end).toLocaleDateString("en-US") : null;
+
+    // Build the content for the tooltip
+    const content = `
+    <strong>${title}</strong><br>
+    Description: ${extendedProps.description || "No description"}<br>
+    Start Date: ${startDate}<br>
+    ${endDate ? `End Date: ${endDate}` : ""}
+  `;
+
+    const isTouchDevice = () =>
+      "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    // Create the tooltip
+    tippy(info.el, {
+      content: content,
+      allowHTML: true,
+      interactive: false, // Ensures tooltips won't "stick"
+      hideOnClick: true, // Close tip when clicking outside
+      trigger: isTouchDevice() ? "click touchstart" : "mouseenter", // Trigger on touch and click for mobile
+      placement: "top",
+      theme: "light", // Optional: custom themes from tippy.js
+      appendTo: document.body,
+      duration: [300, 100], // Sets speed of opening and closing tip
+    });
+  };
+
+  // Handles when a user leaves the task/project (optional cleanup)
+  const handleEventMouseLeave = (info) => {
+    // Optional if you want to handle specific cleanup after hover
+  };
 
   // Render custom content for calendar events (tasks/projects)
   const renderEventContent = (eventInfo) => (
@@ -281,6 +320,8 @@ const Calendar = () => {
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView={currentView}
         initialDate={currentDate}
+        selectable={false} // Stops task from being created on click
+        selectMirror={true}
         eventResizableFromStart={true}
         eventDurationEditable={true}
         eventStartEditable={true}
@@ -314,7 +355,6 @@ const Calendar = () => {
           },
         }}
         events={events}
-        selectable={true}
         editable={true}
         timeZone="local"
         // Comment out the select prop to prevent modal from popping up on calendar space clicks
@@ -322,9 +362,25 @@ const Calendar = () => {
         eventClick={handleEventClick} // Handle clicking on events to edit
         eventDrop={handleEventDrop} // Handle drag-and-drop of events
         eventContent={renderEventContent} // Customize event display in calendar
+        eventMouseEnter={handleEventMouseEnter} // Hover effect for tasks/projects
+        eventMouseLeave={handleEventMouseLeave} // Remove tooltip on hover out
         dayMaxEvents={true} // Limit events per day
         datesSet={({ view }) => handleViewChange(view.type)} // Track view changes
+        dateClick={(info) => {
+          const calendarApi = calendarRef.current.getApi();
+          const selectedDate = info.dateStr; // Get the clicked date in string format
+
+          // Always switch to the day view when clicking on a date
+          if (
+            ["dayGridMonth", "timeGridWeek", "timeGridFourDay"].includes(
+              calendarApi.view.type
+            )
+          ) {
+            calendarApi.changeView("timeGridDay", selectedDate);
+          }
+        }}
       />
+
       {/* Add Task Modal */}
       <AddTaskModal
         isOpen={isTaskModalOpen && !selectedEvent}
