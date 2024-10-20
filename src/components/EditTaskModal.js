@@ -136,6 +136,13 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
     }
   };
 
+  const handleClose = () => {
+    // Clear error messages
+    setTitleError(false);
+    setDueDateError(false);
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -175,7 +182,7 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
         <button className="delete-button" onClick={handleDelete}>
           Delete
         </button>
-        <button onClick={onClose}>Cancel</button>
+        <button onClick={handleClose}>Cancel</button>
       </div>
     </div>
   );

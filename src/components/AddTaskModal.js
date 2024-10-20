@@ -82,6 +82,9 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
     setDueDate(selectedDate || ""); // Reset the date
     setDueTime("12:00"); // Reset the time to the default value
     setDescription("");
+    // Clear any error messages
+    setTitleError(false);
+    setDueDateError(false);
     onClose(); // Close the modal
   };
 
@@ -91,16 +94,16 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
     <div className="modal top-modal">
       <div className="modal-content">
         <h2>Add New Task</h2>
-          <label>Task Title</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className={titleError ? "input-error" : ""}
-          />
-          {titleError && (
-            <span className="error-text">Task title is required</span>
-          )}
+        <label>Task Title</label>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className={titleError ? "input-error" : ""}
+        />
+        {titleError && (
+          <span className="error-text">Task title is required</span>
+        )}
         <label>Due Date</label>
         <input
           type="date"
@@ -111,20 +114,20 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
         {dueDateError && (
           <span className="error-text">Due date is required</span>
         )}
-      <label>Time</label>
-      <input
-        type="time"
-        value={dueTime} // Separate time input
-        onChange={(e) => setDueTime(e.target.value)}
-      />
-      <textarea
-        placeholder="Task Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-      <button onClick={handleSave}>Save</button>
-      <button onClick={handleCancel}>Cancel</button>
-    </div>
+        <label>Time</label>
+        <input
+          type="time"
+          value={dueTime} // Separate time input
+          onChange={(e) => setDueTime(e.target.value)}
+        />
+        <textarea
+          placeholder="Task Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <button onClick={handleSave}>Save</button>
+        <button onClick={handleCancel}>Cancel</button>
+      </div>
     </div>
   );
 };

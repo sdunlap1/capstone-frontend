@@ -10,6 +10,9 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [nameError, setNameError] = useState(false);
+  const [startDateError, setStartDateError] = useState(false);
+  const [endDateError, setEndDateError] = useState(false);
 
   useEffect(() => {
     if (isOpen && event?.type === "project") {
@@ -53,25 +56,51 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
       return;
     }
 
-     // Get the current date (today) and log it for debugging
-     const today = new Date().toISOString().slice(0, 10); // Format as YYYY-MM-DD
-     console.log("Today's date:", today);
- 
-     // Format endDate for comparison
-     const formattedEndDateForComparison = new Date(endDate).toISOString().slice(0, 10); // Format as YYYY-MM-DD
- 
-     // Check if endDate is before today
-     if (formattedEndDateForComparison < today) {
-       alert("Selected End Date is in the past.");
-       // You can prevent saving by adding "return;" if needed
-     }
-    
+    let hasError = false;
+
+    // Clear previous error messages
+    setNameError(false);
+    setStartDateError(false);
+    setEndDateError(false);
+
+    // Check if name is empty
+    if (!name.trim()) {
+      setNameError(true);
+      hasError = true;
+    }
+
+    // Check for empty Start Date
+    if (!startDate) {
+      setStartDateError(true);
+      hasError = true;
+    }
+
+    // Check for End Date
+    if (!endDate) {
+      setEndDateError(true);
+      hasError = true;
+    }
+
+    if (hasError) return;
+
+    // Get the current date (today) and log it for debugging
+    const today = new Date().toISOString().slice(0, 10); // Format as YYYY-MM-DD
+
+    // Format endDate for comparison
+    const formattedEndDateForComparison = new Date(endDate)
+      .toISOString()
+      .slice(0, 10); // Format as YYYY-MM-DD
+
+    // Check if endDate is before today
+    if (formattedEndDateForComparison < today) {
+      alert("Selected End Date is in the past.");
+      // You can prevent saving by adding "return;" if needed
+    }
+
     try {
-      // Format the start and end dates.
-      const formattedStartDate = new Date(
-        startDate + "T12:00:00"
-      ).toISOString(); // Force UTC
-      const formattedEndDate = new Date(endDate + "T12:00:00").toISOString(); // Force UTC
+      // Simply use the date as-is without forcing to UTC
+      const formattedStartDate = new Date(startDate + "T12:00:00"); // Local time
+      const formattedEndDate = new Date(endDate + "T12:00:00"); // Local time
 
       // Log the formatted dates
       console.log("Formatted start date for save:", formattedStartDate);
@@ -121,6 +150,14 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
     }
   };
 
+  const handleClose = () => {
+    // Clear error messages
+    setNameError(false);
+    setStartDateError(false);
+    setEndDateError(false);
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -133,6 +170,9 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
+        {nameError && (
+          <span className="error-text">Project name is required</span>
+        )}
         <textarea
           placeholder="Project Description"
           value={description}
@@ -144,19 +184,23 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
         />
+        {startDateError && (
+          <span className="error-text">Start date is required</span>
+        )}
         <label>End Date</label>
         <input
           type="date"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
         />
-        <button onClick={handleSave} disabled={!name && !startDate && !endDate}>
-          Save
-        </button>
+        {endDateError && (
+          <span className="error-text">End date is required</span>
+        )}
+        <button onClick={handleSave}>Save</button>
         <button className="delete-button" onClick={handleDelete}>
           Delete
         </button>
-        <button onClick={onClose}>Cancel</button>
+        <button onClick={handleClose}>Cancel</button>
       </div>
     </div>
   );
