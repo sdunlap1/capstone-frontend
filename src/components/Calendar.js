@@ -47,7 +47,7 @@ const Calendar = () => {
           description: task.description || "",
           type: "task",
           allDay: false,
-          backgroundColor: "#FFD700",
+          backgroundColor: "blue",
           classNames: ["task-event"],
         }));
         setEvents((prevEvents) => [...prevEvents, ...taskEvents]); // Merge with existing events

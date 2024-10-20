@@ -81,7 +81,7 @@
   background-color: red !important;
 }
 .fc-event.task-event {
-  background-color: #FFD700; /* Ensure the background color is applied */
-  color: #000;
+  background-color: darkblue; /* Ensure the background color is applied */
+  color: #FFF;
 }
 

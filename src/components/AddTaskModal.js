@@ -11,12 +11,25 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
 
   const handleSave = async () => {
     if (!dueDate) {
-      alert("Please select both a due date.");
+      alert("Due Date is required");
       return;
     }
-    // Get today's date
-    const today = new Date().toISOString().slice(0, 10); // Current date in YYYY-MM-DD format
-    const selectedDueDate = new Date(dueDate).toISOString().slice(0, 10);
+    if (!title.trim()) {
+      alert("Task title is required");
+      return;
+    }
+    // Get today's date in Los Angeles timezone, formatted as YYYY-MM-DD
+    const today = new Date()
+      .toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" })
+      .slice(0, 10);
+
+    // Parse selected due date in local timezone, adjusting for time difference
+    const selectedDueDate = new Date(`${dueDate}T${dueTime || "00:00"}`)
+      .toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" })
+      .slice(0, 10);
+
+    console.log("Today's date:", today); // Debugging statement
+    console.log("Selected dueDate:", selectedDueDate); // Debugging statement
 
     // Check if the selected due date is in the past
     if (selectedDueDate < today) {
@@ -67,7 +80,7 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
         <h2>Add New Task</h2>
         <input
           type="text"
-          placeholder="Task Title"
+          placeholder="Task Name"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
@@ -75,7 +88,8 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
         <input
           type="date"
           value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)} // Separate date input
+          onChange={(e) => setDueDate(e.target.value)}
+          placeholder="Select due date"
         />
         <label>Time</label>
         <input
@@ -88,9 +102,7 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <button onClick={handleSave} disabled={!title || !dueDate || !dueTime}>
-          Save
-        </button>
+        <button onClick={handleSave}>Save</button>
         <button onClick={handleCancel}>Cancel</button>
       </div>
     </div>

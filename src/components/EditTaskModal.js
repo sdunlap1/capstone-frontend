@@ -21,12 +21,15 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
       // Pre-fill due_date if exists
       if (event.due_date) {
         const dueDateObj = new Date(event.due_date);
-  
+
         setDueDate(dueDateObj.toISOString().slice(0, 10)); // Extract date (YYYY-MM-DD)
-  
+
         // Adjust the time manually using timezone offset
-        const localTime = new Date(dueDateObj.getTime() - (dueDateObj.getTimezoneOffset() * 60000))
-          .toISOString().slice(11, 16); // Extract local time in HH:MM format
+        const localTime = new Date(
+          dueDateObj.getTime() - dueDateObj.getTimezoneOffset() * 60000
+        )
+          .toISOString()
+          .slice(11, 16); // Extract local time in HH:MM format
         setDueTime(localTime);
       } else {
         setDueDate("");
@@ -40,41 +43,55 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
       alert("Task ID is missing. Cannot save changes.");
       return;
     }
-  
+    if (!title.trim()) {
+      alert("Task title is required");
+      return;
+    }
+    if (!dueDate) {
+      alert("Due Date is required");
+      return;
+    }
+
     // Combine the date and time inputs into a single ISO string
     const localDueDate = new Date(`${dueDate}T${dueTime}`);
     const formattedDueDate = localDueDate.toISOString(); // Convert to ISO format
-  
+
     const updatedFields = {
       title: title.trim() ? title : event.title,
       description: description.trim() ? description : event.description,
       due_date: formattedDueDate, // Correct variable name here
     };
-  
-    // Get today's date for validation
-    const today = new Date().toISOString().slice(0, 10);
-    const selectedDueDate = new Date(dueDate).toISOString().slice(0, 10);
-  
+
+    // Get today's date in Los Angeles timezone
+    const today = new Date()
+      .toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" })
+      .slice(0, 10);
+
+    // Format the selected due date with the appropriate time and timezone
+    const selectedDueDate = new Date(`${dueDate}T${dueTime || "00:00"}`)
+      .toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" })
+      .slice(0, 10);
+
     console.log("Today's date:", today);
     console.log("Selected dueDate:", selectedDueDate);
-  
+
     // Check if due date is in the past
     if (selectedDueDate < today) {
       alert("Warning: Due date is in the past.");
       // Allow saving, just showing a warning
     }
-  
+
     try {
       console.log("Title:", title);
       console.log("Description:", description);
       console.log("Due Date being sent:", formattedDueDate); // Corrected logging
-  
+
       await axiosInstance.put(`/tasks/${event.id}`, updatedFields, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       alert("Task updated successfully!");
       onTaskUpdated(); // Refresh the task list
       onClose(); // Close the modal
@@ -136,7 +153,7 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <button onClick={handleSave} disabled={!title || !dueDate}>
+        <button onClick={handleSave}>
           Save
         </button>
         <button className="delete-button" onClick={handleDelete}>
