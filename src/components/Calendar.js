@@ -13,7 +13,7 @@ import AddTaskModal from "./AddTaskModal";
 import EditTaskModal from "./EditTaskModal";
 import AddProjectModal from "./AddProjectModal";
 import EditProjectModal from "./EditProjectModal";
-import "../styles/Calendar.css";
+
 
 const Calendar = () => {
   const { token } = useAuth();
@@ -332,7 +332,6 @@ const Calendar = () => {
 
   return (
     <div>
-      {/* <h1>Task and Project Calendar</h1> */}
       <FullCalendar
         ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -344,10 +343,12 @@ const Calendar = () => {
         eventDurationEditable={true}
         eventStartEditable={true}
         eventResize={handleEventResize}
+        aspectRatio={1.35}
+        handleWindowResize={true}
         headerToolbar={{
-          left: "prev,next today addTaskButton addProjectButton",
-          center: "title",
-          right: "dayGridMonth,timeGridWeek,timeGridDay,timeGridFourDay",
+          left: "",  // All buttons on the left
+          center: "title",   // The title (month, day, year) centered
+          right: "prev,next today,dayGridMonth,timeGridWeek,timeGridDay,timeGridFourDay, addTaskButton,addProjectButton", // View switchers on the right
         }}
         customButtons={{
           addTaskButton: {
@@ -372,6 +373,7 @@ const Calendar = () => {
             buttonText: "4 day",
           },
         }}
+        
         events={events}
         editable={true}
         timeZone="local"

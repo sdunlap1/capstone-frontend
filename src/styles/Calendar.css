@@ -93,6 +93,28 @@
   background-color: red !important;
 }
 
+/* style the title and buttons */
+.fc-toolbar {
+  display: flex;
+  flex-direction: column; /* Stack title and buttons vertically */
+  align-items: center; /* Center all elements */
+  margin-bottom: 20px; /* Adjust space below the toolbar */
+}
+
+/* Center and style the title */
+.fc-toolbar-title {
+  font-size: 24px;
+  margin-bottom: 10px; /* Space between title and buttons */
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Adjust the buttons layout */
+.fc-toolbar-chunk {
+  display: flex;
+  justify-content: center;
+}
+
 /* Use this styling for month view all other views are 
 handled in fetchTasks in Calendar.js */
 
@@ -104,6 +126,22 @@ handled in fetchTasks in Calendar.js */
 }
 /* Style for completed tasks */
 .task-event.completed {
-  background-color: grey; /* Grey out completed tasks */
-  border-color: darkgrey; /* Dark grey border for completed tasks */
+  background-color: grey; 
+  border-color: darkgrey; 
+}
+
+/* adding padding to the whole calendar over 768px */
+@media (min-width: 768px) {
+  .fc {
+    padding-right: 20px; 
+    padding-bottom: 20px;
+    padding-left: 20px;  
+  }
+}
+/* Optional: Responsive styling for mobile */
+@media (max-width: 768px) {
+  .fc-toolbar-title {
+    font-size: 14px !important;
+    padding: 0, 5, 0, 5 !important; 
+  }
 }

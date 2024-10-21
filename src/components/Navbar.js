@@ -6,8 +6,8 @@ const Navbar = () => {
   const { token, logout } = useAuth();
   const location = useLocation();
   return (
-    <nav>
-      <ul>
+    <nav className="navbar">
+      <ul className="nav-links">
         {/* Show Dashboard and Calendar for logged-in users */}
         {token ? (
           <>

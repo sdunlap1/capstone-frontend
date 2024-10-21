@@ -7,6 +7,7 @@ import SignupForm from './components/SignupForm';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar'; 
 import './styles/App.css';
+import './styles/Calendar.css';
 
 const HomePage = () => (
   <div>
@@ -19,6 +20,7 @@ const App = () => {
   return (
     <div className="App">
       <Navbar />
+      <div className="main-content">
       <Routes>
         <Route path="/" element={<HomePage />} />  
         <Route path="/calendar" element={<ProtectedRoute><CalendarPage /></ProtectedRoute>} />
@@ -26,6 +28,7 @@ const App = () => {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignupForm />} />
       </Routes>
+      </div>
     </div>
   );
 };

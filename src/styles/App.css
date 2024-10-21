@@ -16,3 +16,125 @@
     transform: rotate(360deg);
   }
 }
+
+/* Styles for NAVBAR */
+/* Basic reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+/* Navbar container */
+.navbar {
+  display: flex;
+  justify-content: center;
+  background-color: #333;
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+/* Nav links list */
+.nav-links {
+  display: flex;
+  justify-content: center; /* Align horizontally */
+  align-items: center;
+  list-style-type: none;
+}
+
+/* Individual link items */
+.nav-links li {
+  margin: 0 20px;
+}
+
+/* Styling the links */
+.nav-links a,  .nav-links button {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 8px 12px;
+}
+
+.nav-links a:hover {
+  background-color: #555;
+  border-radius: 4px;
+}
+
+/* Style for the logout button */
+.nav-links button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 8px 12px;
+}
+
+.nav-links button:hover {
+  background-color: #555;
+  border-radius: 4px;
+}
+
+/* Add some padding to the main content to avoid being hidden by the navbar */
+.main-content {
+  padding-top: 100px;
+}
+
+/* Media query for mobile */
+@media (max-width: 768px) {
+  body {
+    font-size: 12px;
+  }
+  .navbar {
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .nav-links li {
+    margin: 10px 0;
+  }
+  .nav-links a, .nav-links button {
+    font-size: 12px;
+  }
+
+  /* Make the calendar and other content responsive */
+  .main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 120px;
+  }
+}
+
+/* Additional media query for very small devices */
+@media (max-width: 480px) {
+  body {
+    font-size: 10px;
+  }
+  .navbar {
+    padding: 5px;
+  }
+  .nav-links a, .nav-links button {
+    font-size: 10px;
+  }
+  .nav-links li {
+    margin: 5px 0;
+  }
+
+  .main-content {
+    padding: 5px;
+  }
+}
