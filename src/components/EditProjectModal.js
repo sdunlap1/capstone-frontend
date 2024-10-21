@@ -13,38 +13,32 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
   const [nameError, setNameError] = useState(false);
   const [startDateError, setStartDateError] = useState(false);
   const [endDateError, setEndDateError] = useState(false);
-
+  const [alertShown, setAlertShown] = useState(false); // This flag ensures the alert only shows once
+  const [completed, setCompleted] = useState(false);
+  
   useEffect(() => {
     if (isOpen && event?.type === "project") {
-      console.log("EditProjectModal opened, event data:", event);
-
       // Pre-fill the fields
       setName(event.title || "");
       setDescription(event.description || "");
-
-      // Debug the raw start and end dates coming from the event
-      console.log("Raw start date from event:", event.start);
-      console.log("Raw end date from event:", event.end);
+      setCompleted(event.completed || false);
+      setAlertShown(false);
 
       // If start date exists, set it
       if (event.start) {
         const formattedStartDate = new Date(event.start)
           .toISOString()
           .slice(0, 10);
-        console.log("Formatted start date:", formattedStartDate);
         setStartDate(formattedStartDate);
       } else {
-        console.log("No start date provided.");
         setStartDate(""); // Clear the field if no start date
       }
 
       // If end date exists, set it
       if (event.end) {
         const formattedEndDate = new Date(event.end).toISOString().slice(0, 10);
-        console.log("Formatted end date:", formattedEndDate);
         setEndDate(formattedEndDate);
       } else {
-        console.log("No end date provided.");
         setEndDate(""); // Clear the field if no end date
       }
     }
@@ -82,19 +76,33 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
     }
 
     if (hasError) return;
+    // Convert the start and end dates to Date objects for comparison
+    const selectedStartDate = new Date(startDate + "T12:00:00"); // Assuming the user input is in YYYY-MM-DD format
+    const selectedEndDate = new Date(endDate + "T12:00:00"); // Assuming the user input is in YYYY-MM-DD format
+
+    // Check if the end date is before the start date
+    if (selectedEndDate < selectedStartDate) {
+      alert("End date cannot be before the start date.");
+      return; // Prevent the form from being saved
+    }
 
     // Get the current date (today) and log it for debugging
     const today = new Date().toISOString().slice(0, 10); // Format as YYYY-MM-DD
 
-    // Format endDate for comparison
-    const formattedEndDateForComparison = new Date(endDate)
-      .toISOString()
-      .slice(0, 10); // Format as YYYY-MM-DD
+    // Safeguard: Make sure originalEndDate is available and valid
+    const originalEndDate = event.end ? event.end.slice(0, 10) : today;
 
-    // Check if endDate is before today
-    if (formattedEndDateForComparison < today) {
-      alert("Selected End Date is in the past.");
-      // You can prevent saving by adding "return;" if needed
+    // Format the new end date selected by the user
+    const newEndDate = new Date(endDate)
+      .toLocaleDateString("en-US", { timeZone: "America/Los_Angeles" })
+      .slice(0, 10);
+
+    // Only show the alert if:
+    // 1. The project's original end date was in the future
+    // 2. The new selected end date is in the past
+    if (!alertShown && originalEndDate >= today && newEndDate < today) {
+      alert("Warning: End date is in the past.");
+      setAlertShown(true); // Mark that the alert has been shown
     }
 
     try {
@@ -102,16 +110,13 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
       const formattedStartDate = new Date(startDate + "T12:00:00"); // Local time
       const formattedEndDate = new Date(endDate + "T12:00:00"); // Local time
 
-      // Log the formatted dates
-      console.log("Formatted start date for save:", formattedStartDate);
-      console.log("Formatted end date for save:", formattedEndDate);
-
       // Only send fields that have values
       const updatedFields = {
         name: name.trim() ? name : event.name,
         description: description.trim() ? description : event.description,
         start_date: formattedStartDate,
         due_date: formattedEndDate,
+        completed,
       };
 
       await axiosInstance.put(`/projects/${event.project_id}`, updatedFields, {
@@ -196,6 +201,14 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
         {endDateError && (
           <span className="error-text">End date is required</span>
         )}
+        <label>
+          <input
+            type="checkbox"
+            checked={completed} // Checkbox to mark as complete
+            onChange={(e) => setCompleted(e.target.checked)}
+          />
+          Mark as Completed
+        </label>
         <button onClick={handleSave}>Save</button>
         <button className="delete-button" onClick={handleDelete}>
           Delete

@@ -51,11 +51,14 @@ const Calendar = () => {
           title: task.title,
           start: task.due_date,
           description: task.description || "",
+          completed: task.completed,
           type: "task",
           allDay: false,
           backgroundColor: "rgba(0, 0, 255, 0.5",
           borderColor: "rgba(0, 0, 255, 1)",
-          classNames: ["task-event"],
+          backgroundColor: task.completed ? "grey" : "rgba(0, 0, 255, 0.5)", // Grey out completed tasks
+          borderColor: task.completed ? "darkgrey" : "rgba(0, 0, 255, 1)",
+          classNames: ["task-event", task.completed ? "completed" : ""],
         }));
         setEvents((prevEvents) => [...prevEvents, ...taskEvents]); // Merge with existing events
       } else {
@@ -84,11 +87,14 @@ const Calendar = () => {
           start: project.start_date, // Use start_date for multi-day projects
           end: project.due_date || project.start_date, // Use due_date as the end date
           allDay: true, // Set to all-day for project spanning multiple dates
-          backgroundColor: "#4CAF50",
-          borderColor: "#FFD700",
           description: project.description || "",
+          completed: project.completed,
           type: "project",
           project_id: project.project_id,
+          backgroundColor: "#4CAF50",
+          borderColor: "#FFD700",
+          backgroundColor: project.completed ? "grey" : "#4CAF50", 
+          borderColor: project.completed ? "darkgrey" : "#4CAF50",
         }));
         setEvents((prevEvents) => [...prevEvents, ...projectEvents]); // Merge with existing events
       } else {
@@ -147,24 +153,19 @@ const Calendar = () => {
 
     if (extendedProps.type === "task") {
       // Ensure dates are properly handled
-      const formattedDueDate = start
-        ? start.toLocaleDateString("en-US", { timeZone: "UTC" })
-        : "";
+      const formattedDueDate = start ? start.toLocaleDateString("en-US") : "";
       setSelectedEvent({
         id: id.replace("task-", ""), // Extract task ID
         title: title || "", // Pre-fill the task title
         due_date: formattedDueDate,
+        completed: extendedProps.completed ?? false,
         ...extendedProps, // Include other props like description
       });
       setIsTaskModalOpen(true); // Open EditTaskModal
     } else if (extendedProps.type === "project") {
       // Ensure the dates are properly handled
-      const formattedStartDate = start
-        ? start.toLocaleDateString("en-US", { timeZone: "UTC" })
-        : ""; // U.S. format MM/DD/YYYY
-      const formattedEndDate = end
-        ? end.toLocaleDateString("en-US", { timeZone: "UTC" })
-        : ""; // U.S. format MM/DD/YYYY
+      const formattedStartDate = start ? start.toLocaleDateString("en-US") : ""; // U.S. format MM/DD/YYYY
+      const formattedEndDate = end ? end.toLocaleDateString("en-US") : ""; // U.S. format MM/DD/YYYY
 
       console.log("Formatted start date:", formattedStartDate);
       console.log("Formatted end date:", formattedEndDate);
@@ -191,11 +192,23 @@ const Calendar = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Set to midnight for accurate comparison
 
-    // Check if end date is in the past
-    if (updatedEnd < today) {
-      alert("Warning: The end date is in the past.");
-      // Optionally, you can prevent saving by returning here
-      // return;
+    // Safeguard: Extract the original start and end dates
+    const originalStartDate = new Date(event.extendedProps.start_date);
+    originalStartDate.setHours(0, 0, 0, 0); // Set to midnight for accurate comparison
+
+    const originalEndDate = new Date(event.extendedProps.end_date);
+    originalEndDate.setHours(0, 0, 0, 0); // Set to midnight for accurate comparison
+
+    // Check if the original start date was in the future
+    // AND the new start date is in the past
+    // BUT only show the alert if the end date is not already in the past
+    if (
+      originalStartDate >= today && // The original start date was in the future
+      updatedStart < today && // The new start date is in the past
+      originalEndDate >= today // But the original end date was still in the future
+    ) {
+      alert("Warning: The new start date is in the past.");
+      // Allow the resize, just show the warning once
     }
 
     const projectId = event.extendedProps.project_id;
@@ -223,9 +236,14 @@ const Calendar = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Set to midnight for accurate comparison
 
-    // Check if new date is in the past
-    if (newStartDate < today) {
-      alert("Warning: The date is in the past.");
+    // Get the original start date from extendedProps (this is the original due date before the drop)
+    const originalStartDate = new Date(extendedProps.due_date);
+    originalStartDate.setHours(0, 0, 0, 0); // Also set this to midnight for accurate comparison
+
+    // Check if the original start date was in the future, and the new start date is in the past
+    if (originalStartDate >= today && newStartDate < today) {
+      alert("Warning: The new date is in the past.");
+      // Allow the drop, but just show the warning
     }
 
     try {

@@ -9,33 +9,28 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const [dueTime, setDueTime] = useState("12:00");
+  const [dueTime, setDueTime] = useState("");
   const [titleError, setTitleError] = useState(false);
   const [dueDateError, setDueDateError] = useState(false);
+  const [dueTimeError, setDueTimeError] = useState(false);
+  const [completed, setCompleted] = useState(false);
 
+  // Populate fields when modal opens
   useEffect(() => {
     if (isOpen && event?.type === "task") {
-      console.log("due_date from event:", event.due_date);
-      // Log the due_date to verify what's coming from the backend
-      setTitle(event.title || ""); // Pre-fill the title field
-      setDescription(event.description || ""); // Pre-fill the description field
+      setTitle(event.title || ""); // Pre-fill title field
+      setDescription(event.description || ""); // Pre-fill description field
+      setCompleted(event.completed || false); // Pre-fill completed state
 
-      // Pre-fill due_date if exists
+      // Set the current due date, leave time blank
       if (event.due_date) {
         const dueDateObj = new Date(event.due_date);
+        setDueDate(dueDateObj.toISOString().slice(0, 10)); // Populate due date (YYYY-MM-DD)
 
-        setDueDate(dueDateObj.toISOString().slice(0, 10)); // Extract date (YYYY-MM-DD)
-
-        // Adjust the time manually using timezone offset
-        const localTime = new Date(
-          dueDateObj.getTime() - dueDateObj.getTimezoneOffset() * 60000
-        )
-          .toISOString()
-          .slice(11, 16); // Extract local time in HH:MM format
-        setDueTime(localTime);
+        // Keep the time blank (require user to fill in)
+        setDueTime("");
       } else {
         setDueDate("");
-        setDueTime("12:00");
       }
     }
   }, [isOpen, event]);
@@ -45,12 +40,13 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
       alert("Task ID is missing. Cannot save changes.");
       return;
     }
-    
+
     let hasError = false;
 
     // Clear previous error messages
     setTitleError(false);
     setDueDateError(false);
+    setDueTimeError(false);
 
     // Check if title is empty
     if (!title.trim()) {
@@ -63,6 +59,13 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
       setDueDateError(true);
       hasError = true;
     }
+
+    // Check if time is empty (time is always required)
+    if (!dueTime) {
+      setDueTimeError(true);
+      hasError = true;
+    }
+
     if (hasError) return;
 
     // Combine the date and time inputs into a single ISO string
@@ -72,33 +75,31 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
     const updatedFields = {
       title: title.trim() ? title : event.title,
       description: description.trim() ? description : event.description,
-      due_date: formattedDueDate, // Correct variable name here
+      due_date: formattedDueDate, // Send full date and time
+      completed,
     };
 
     // Get today's date in Los Angeles timezone
     const today = new Date()
-      .toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" })
+      .toLocaleDateString("en-US", { timeZone: "America/Los_Angeles" })
       .slice(0, 10);
 
-    // Format the selected due date with the appropriate time and timezone
-    const selectedDueDate = new Date(`${dueDate}T${dueTime || "00:00"}`)
-      .toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" })
+    // Format the current due date (before edit) and the new one the user selected
+    const originalDueDate = event.due_date.slice(0, 10);
+    const newDueDate = new Date(dueDate)
+      .toLocaleDateString("en-US", { timeZone: "America/Los_Angeles" })
       .slice(0, 10);
 
-    console.log("Today's date:", today);
-    console.log("Selected dueDate:", selectedDueDate);
-
-    // Check if due date is in the past
-    if (selectedDueDate < today) {
+    // Only show the alert if:
+    // 1. The task's original due date was in the future
+    // 2. The new selected due date is in the past
+    if (originalDueDate >= today && newDueDate < today) {
       alert("Warning: Due date is in the past.");
       // Allow saving, just showing a warning
     }
 
     try {
-      console.log("Title:", title);
-      console.log("Description:", description);
-      console.log("Due Date being sent:", formattedDueDate); // Corrected logging
-
+      console.log("Due Date being sent:", updatedFields);
       await axiosInstance.put(`/tasks/${event.id}`, updatedFields, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -140,6 +141,7 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
     // Clear error messages
     setTitleError(false);
     setDueDateError(false);
+    setDueTimeError(false);
     onClose();
   };
 
@@ -158,6 +160,7 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
         {titleError && (
           <span className="error-text">Task title is required</span>
         )}
+
         <label>Due Date</label>
         <input
           type="date"
@@ -167,17 +170,31 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
         {dueDateError && (
           <span className="error-text">Due date is required</span>
         )}
+
         <label>Time</label>
         <input
           type="time"
           value={dueTime}
           onChange={(e) => setDueTime(e.target.value)}
         />
+        {dueTimeError && <span className="error-text">Time is required</span>}
+
         <textarea
           placeholder="Task Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+        <label>
+          <input
+            type="checkbox"
+            checked={completed} // Checkbox to mark as complete
+            onChange={(e) => {
+              setCompleted(e.target.checked);
+              console.log("Completed state changed to:", e.target.checked);
+            }}
+          />
+          Mark as Completed
+        </label>
         <button onClick={handleSave}>Save</button>
         <button className="delete-button" onClick={handleDelete}>
           Delete

@@ -6,7 +6,7 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
   const { token } = useAuth();
   const [title, setTitle] = useState("");
   const [dueDate, setDueDate] = useState(selectedDate || ""); // Separate date input
-  const [dueTime, setDueTime] = useState("12:00"); // Separate time input
+  const [dueTime, setDueTime] = useState(""); // Separate time input
   const [description, setDescription] = useState("");
   const [titleError, setTitleError] = useState(false);
   const [dueDateError, setDueDateError] = useState(false);
@@ -80,7 +80,7 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
   const handleCancel = () => {
     setTitle("");
     setDueDate(selectedDate || ""); // Reset the date
-    setDueTime("12:00"); // Reset the time to the default value
+    setDueTime(""); // Reset the time to the default value
     setDescription("");
     // Clear any error messages
     setTitleError(false);

@@ -95,9 +95,15 @@
 
 /* Use this styling for month view all other views are 
 handled in fetchTasks in Calendar.js */
-.fc-event.task-event {
+
+/* non completed tasks */
+.task-event {
   background-color: rgba(0, 0, 255, 0.5); 
   border-color: rgba(0, 0, 255, 1);
   color: #FFF;
 }
-
+/* Style for completed tasks */
+.task-event.completed {
+  background-color: grey; /* Grey out completed tasks */
+  border-color: darkgrey; /* Dark grey border for completed tasks */
+}
