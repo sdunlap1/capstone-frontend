@@ -332,7 +332,7 @@ const Calendar = () => {
 
   return (
     <div>
-      <h1>Task and Project Calendar</h1>
+      {/* <h1>Task and Project Calendar</h1> */}
       <FullCalendar
         ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
