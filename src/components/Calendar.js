@@ -14,7 +14,6 @@ import EditTaskModal from "./EditTaskModal";
 import AddProjectModal from "./AddProjectModal";
 import EditProjectModal from "./EditProjectModal";
 
-
 const Calendar = () => {
   const { token } = useAuth();
   const [events, setEvents] = useState([]);
@@ -34,11 +33,13 @@ const Calendar = () => {
     localStorage.getItem("calendarDate") || new Date().toISOString()
   );
 
-
   // Fetch tasks from the backend and convert them to calendar events
-  const fetchTasks = async (searchTerm) => {
+  const fetchTasks = async () => {
     try {
-      const response = await axiosInstance.get(`/tasks?search=${searchTerm}`, {
+      const response = await axiosInstance.get("/tasks", {
+        params: {
+          search: searchTerm, // Axios params is cleaner for search
+        },
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -70,9 +71,12 @@ const Calendar = () => {
   };
 
   // Fetch projects from the backend and convert them to calendar events
-  const fetchProjects = async (searchTerm) => {
+  const fetchProjects = async () => {
     try {
-      const response = await axiosInstance.get(`/projects?search=${searchTerm}`, {
+      const response = await axiosInstance.get("/projects", {
+        params: {
+          search: searchTerm, // Axios is params is cleaner
+        },
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -91,7 +95,7 @@ const Calendar = () => {
           completed: project.completed,
           type: "project",
           project_id: project.project_id,
-          backgroundColor: project.completed ? "grey" : "#4CAF50", 
+          backgroundColor: project.completed ? "grey" : "#4CAF50",
           borderColor: project.completed ? "darkgrey" : "darkblue",
         }));
         setEvents((prevEvents) => [...prevEvents, ...projectEvents]); // Merge with existing events
@@ -106,8 +110,8 @@ const Calendar = () => {
   // Fetch both tasks and projects as calendar events
   const fetchEvents = async () => {
     setEvents([]); // Clear events before fetching new data
-    await fetchTasks(searchTerm);
-    await fetchProjects(searchTerm);
+    await fetchTasks();
+    await fetchProjects();
   };
 
   useEffect(() => {
@@ -330,6 +334,7 @@ const Calendar = () => {
 
   return (
     <div>
+      {/* Search Bar */}
       <div className="search-container">
         <input
           type="text"
@@ -338,6 +343,34 @@ const Calendar = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
+
+      {/* Search Results */}
+      <div className="search-results">
+        {searchTerm.trim() !== "" &&
+          events
+            .filter((event) =>
+              event.title.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+            .map((event) => (
+              <div
+                key={event.id}
+                className="search-result-item"
+                onClick={() => {
+                  const calendarApi = calendarRef.current.getApi();
+                  if (event.type === "task") {
+                    // Navigate to the day for tasks
+                    calendarApi.changeView("timeGridDay", event.start);
+                  } else if (event.type === "project") {
+                    // Navigate to the start date of the project
+                    calendarApi.changeView("timeGridDay", event.start);
+                  }
+                }}
+              >
+                {event.title} - {new Date(event.start).toLocaleDateString()}
+              </div>
+            ))}
+      </div>
+
       <FullCalendar
         ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -352,9 +385,10 @@ const Calendar = () => {
         aspectRatio={1.35}
         handleWindowResize={true}
         headerToolbar={{
-          left: "",  // All buttons on the left
-          center: "title",   // The title (month, day, year) centered
-          right: "prev,next today,dayGridMonth,timeGridWeek,timeGridDay,timeGridFourDay, addTaskButton,addProjectButton", // View switchers on the right
+          left: "", // All buttons on the left
+          center: "title", // The title (month, day, year) centered
+          right:
+            "prev,next today,dayGridMonth,timeGridWeek,timeGridDay,timeGridFourDay, addTaskButton,addProjectButton", // View switchers on the right
         }}
         customButtons={{
           addTaskButton: {
@@ -379,7 +413,6 @@ const Calendar = () => {
             buttonText: "4 day",
           },
         }}
-        
         events={events}
         editable={true}
         timeZone="local"
