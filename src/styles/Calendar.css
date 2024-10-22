@@ -81,6 +81,62 @@
   font-size: 0.9rem;
   margin-top: 0.2rem;
 }
+/* ############################ 
+Styling the Calendar search bar
+############################ */
+
+.search-container {
+  margin: 0 auto;
+  margin-bottom: 20px;
+  width: 300px;
+  display: flex;
+  justify-content: center;
+  position: relative; /* Ensure the results box stays within the container */
+}
+
+.search-container input {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.search-results {
+  position: absolute; /* Position the results below the input field */
+  top: 100%; /* Position just below the input */
+  left: 0;
+  width: calc(100%); /* Make the width match the input field */
+  max-height: 300px; /* Limit max height */
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow-y: auto; /* Enable scroll if results are too many */
+  z-index: 101; /* Ensure it stays above other content */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.search-result-item {
+  padding: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.search-result-item:last-child {
+  border-bottom: none; /* Remove the bottom border for the last item */
+}
+
+.search-result-item:hover {
+  background-color: #e0e0e0;
+}
+.search-results:empty {
+  display: none;
+}
+
+/* ################################
+end styling the Calendar search bar 
+################################# */
 
 /* overriding FC styling */
 .fc-addTaskButton-button, .fc-addProjectButton-button {

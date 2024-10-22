@@ -24,6 +24,7 @@ const Calendar = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const calendarRef = useRef(null);
+  const searchRef = useRef(null); // Reference to the search container
 
   // State for tracking current view and date
   const [currentView, setCurrentView] = useState(
@@ -331,44 +332,65 @@ const Calendar = () => {
       <i>{eventInfo.event.title}</i>
     </>
   );
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchTerm(""); // Clear the search term when clicking outside
+      }
+    };
+
+    // Add event listener when component mounts
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Clean up the event listener when component unmounts
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [searchRef]);
 
   return (
     <div>
       {/* Search Bar */}
-      <div className="search-container">
+      <div className="search-container" ref={searchRef}>
         <input
           type="text"
           placeholder="Search tasks/projects..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-      </div>
-
-      {/* Search Results */}
-      <div className="search-results">
-        {searchTerm.trim() !== "" &&
-          events
-            .filter((event) =>
-              event.title.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-            .map((event) => (
-              <div
-                key={event.id}
-                className="search-result-item"
-                onClick={() => {
-                  const calendarApi = calendarRef.current.getApi();
-                  if (event.type === "task") {
-                    // Navigate to the day for tasks
-                    calendarApi.changeView("timeGridDay", event.start);
-                  } else if (event.type === "project") {
-                    // Navigate to the start date of the project
-                    calendarApi.changeView("timeGridDay", event.start);
-                  }
-                }}
-              >
-                {event.title} - {new Date(event.start).toLocaleDateString()}
-              </div>
-            ))}
+        {/* Search Results */}
+        <div className="search-results">
+          {searchTerm.trim() !== "" &&
+            events
+              .filter(
+                (event) =>
+                  event.title
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase()) ||
+                  event.description
+                    ?.toLowerCase()
+                    .includes(searchTerm.toLowerCase()) // Include description in search
+              )
+              .map((event) => (
+                <div
+                  key={event.id}
+                  className="search-result-item"
+                  onClick={() => {
+                    const calendarApi = calendarRef.current.getApi();
+                    if (event.type === "task") {
+                      // Navigate to the day for tasks
+                      calendarApi.changeView("timeGridDay", event.start);
+                    } else if (event.type === "project") {
+                      // Navigate to the start date of the project
+                      calendarApi.changeView("timeGridDay", event.start);
+                    }
+                    setSearchTerm("");
+                  }}
+                >
+                  {event.title} - {new Date(event.start).toLocaleDateString()}
+                </div>
+              ))}
+        </div>
       </div>
 
       <FullCalendar

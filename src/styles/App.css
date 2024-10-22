@@ -228,22 +228,6 @@ button:hover {
 }
 /* end styling for user info */
 
-/* Styling the Calendar search bar */
-.search-container {
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
-}
-
-.search-container input {
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 300px;
-}
-/* end styling the Calendar search bar */
-
 /* adding padding to the whole calendar over 768px */
 @media (min-width: 768px) {
   .fc {
