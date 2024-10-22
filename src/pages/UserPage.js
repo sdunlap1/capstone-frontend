@@ -76,16 +76,16 @@ const UserPage = () => {
   };
 
   return (
-    <div>
-      <h1>User Information</h1>
-      <p>
+    <div className="form-container">
+    <div className="user-info">
+      <h1 className="heading">User Information</h1>
+      <p className="heading-info">
         <strong>Username:</strong> {userInfo.username}
-      </p>
-      <p>
+      <br />
         <strong>Email:</strong> {userInfo.email}
       </p>
 
-      <h1>Edit Your Information</h1>
+      <h1 className="heading">Edit Your Information</h1>
 
       {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
@@ -93,7 +93,7 @@ const UserPage = () => {
       <form onSubmit={handleSave}>
         <label>
           Email:
-          <input
+          <input className="edit-info"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -102,7 +102,7 @@ const UserPage = () => {
         <br />
         <label>
           New Password:
-          <input
+          <input className="edit-info"
             type="password"
             placeholder="Leave blank if you don't want to change"
             value={password}
@@ -110,8 +110,9 @@ const UserPage = () => {
           />
         </label>
         <br />
-        <button type="submit">Save Changes</button>
+        <button className="auth-button" type="submit">Save Changes</button>
       </form>
+      </div>
     </div>
   );
 };

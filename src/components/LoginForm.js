@@ -37,6 +37,9 @@ const LoginForm = () => {
   };
 
   return (
+    <div className="form-container">
+      <div className="form-box">
+        <h1 className="heading">Please Login</h1>
     <form onSubmit={handleLogin}>
       <input
         type="text"
@@ -53,8 +56,10 @@ const LoginForm = () => {
         autoComplete="current-password"
       />
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <button type="submit">Login</button>
+      <button className="auth-button" type="submit">Login</button>
     </form>
+    </div>
+    </div>
   );
 };
 

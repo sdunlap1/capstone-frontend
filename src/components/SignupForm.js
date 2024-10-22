@@ -56,8 +56,9 @@ const SignupForm = () => {
   };
 
   return (
-    <div>
-      <h1>Signup</h1>
+    <div className="form-container">
+      <div className="form-box">
+      <h1 className="heading">Signup</h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSignup}>
         <div>
@@ -87,8 +88,9 @@ const SignupForm = () => {
             required
           />
         </div>
-        <button type="submit">Sign Up</button>
+        <button className="auth-button" type="submit">Sign Up</button>
       </form>
+      </div>
     </div>
   );
 };

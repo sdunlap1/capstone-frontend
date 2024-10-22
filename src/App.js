@@ -20,15 +20,21 @@ const App = () => {
   return (
     <div className="App">
       <Navbar />
-      <div className="main-content">
       <Routes>
-        <Route path="/" element={<HomePage />} />  
-        <Route path="/calendar" element={<ProtectedRoute><CalendarPage /></ProtectedRoute>} />
+        <Route path="/" element={
+          <div className="main-content">
+            <HomePage />
+            </div>
+          } />  
+        <Route path="/calendar" element={ 
+          <div className="main-content">
+          <ProtectedRoute><CalendarPage /></ProtectedRoute>
+          </div> 
+        } />
         <Route path="/user" element={<ProtectedRoute><UserPage /></ProtectedRoute>} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignupForm />} />
       </Routes>
-      </div>
     </div>
   );
 };
