@@ -5,7 +5,7 @@
   "license": "ISC",
   "description": "A FullCalendar React integration for a task management app.",
   "scripts": {
-    "start": "react-scripts start",
+    "start": "HOST=10.0.4.23 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
