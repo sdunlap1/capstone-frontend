@@ -23,6 +23,8 @@ const Calendar = () => {
   const [isAddProjectModalOpen, setIsAddProjectModalOpen] = useState(false); // State for AddProjectModal
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const calendarRef = useRef(null);
 
   // State for tracking current view and date
   const [currentView, setCurrentView] = useState(
@@ -32,12 +34,11 @@ const Calendar = () => {
     localStorage.getItem("calendarDate") || new Date().toISOString()
   );
 
-  const calendarRef = useRef(null);
 
   // Fetch tasks from the backend and convert them to calendar events
-  const fetchTasks = async () => {
+  const fetchTasks = async (searchTerm) => {
     try {
-      const response = await axiosInstance.get("/tasks", {
+      const response = await axiosInstance.get(`/tasks?search=${searchTerm}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -54,7 +55,6 @@ const Calendar = () => {
           completed: task.completed,
           type: "task",
           allDay: false,
-          backgroundColor: "rgba(0, 0, 255, 0.5",
           borderColor: "rgba(0, 0, 255, 1)",
           backgroundColor: task.completed ? "grey" : "rgba(0, 0, 255, 0.5)", // Grey out completed tasks
           borderColor: task.completed ? "darkgrey" : "rgba(0, 0, 255, 1)",
@@ -70,9 +70,9 @@ const Calendar = () => {
   };
 
   // Fetch projects from the backend and convert them to calendar events
-  const fetchProjects = async () => {
+  const fetchProjects = async (searchTerm) => {
     try {
-      const response = await axiosInstance.get("/projects", {
+      const response = await axiosInstance.get(`/projects?search=${searchTerm}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -91,10 +91,8 @@ const Calendar = () => {
           completed: project.completed,
           type: "project",
           project_id: project.project_id,
-          backgroundColor: "#4CAF50",
-          borderColor: "#FFD700",
           backgroundColor: project.completed ? "grey" : "#4CAF50", 
-          borderColor: project.completed ? "darkgrey" : "#4CAF50",
+          borderColor: project.completed ? "darkgrey" : "darkblue",
         }));
         setEvents((prevEvents) => [...prevEvents, ...projectEvents]); // Merge with existing events
       } else {
@@ -108,13 +106,13 @@ const Calendar = () => {
   // Fetch both tasks and projects as calendar events
   const fetchEvents = async () => {
     setEvents([]); // Clear events before fetching new data
-    await fetchTasks();
-    await fetchProjects();
+    await fetchTasks(searchTerm);
+    await fetchProjects(searchTerm);
   };
 
   useEffect(() => {
     fetchEvents();
-  }, [token]);
+  }, [token, searchTerm]);
 
   // Save view and date when the view or date changes
   const handleViewChange = (view) => {
@@ -332,6 +330,14 @@ const Calendar = () => {
 
   return (
     <div>
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Search tasks/projects..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
       <FullCalendar
         ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}

@@ -228,6 +228,22 @@ button:hover {
 }
 /* end styling for user info */
 
+/* Styling the Calendar search bar */
+.search-container {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.search-container input {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 300px;
+}
+/* end styling the Calendar search bar */
+
 /* adding padding to the whole calendar over 768px */
 @media (min-width: 768px) {
   .fc {
@@ -346,44 +362,5 @@ button:hover {
 
   .auth-button {
     font-size: 1em;
-  }
-}
-
-@media (max-width: 480px) {
-  .user-info {
-    font-size: 0.85em;
-  }
-
-  .edit-info input {
-    padding: 8px;
-  }
-
-  .auth-button {
-    font-size: 0.9em;
-  }
-}
-
-/* Additional media query for very small devices */
-@media (max-width: 480px) {
-  body {
-    font-size: 10px;
-  }
-  .navbar {
-    padding: 5px; /* Reduce padding on mobile */
-    flex-direction: column; /* Stack links vertically */
-    align-items: center; 
-  }
-
-  .nav-links {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .nav-links li {
-    margin: 5px 0; /* Reduce space between links */
-  }
-
-  .nav-links a, .nav-links button {
-    font-size: 12px; /* Adjust font size for better fit */
   }
 }
