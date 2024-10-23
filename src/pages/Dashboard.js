@@ -108,10 +108,10 @@ const Dashboard = () => {
         <div className="left-column">
           <h3>User Info</h3>
           <p>
-            <strong>Username:</strong> JohnDoe
+            <strong>Username:</strong> {user?.username || "Guest"}
           </p>
           <p>
-            <strong>Email:</strong> johndoe@email.com
+            <strong>Email:</strong> {user?.email || "Nothing to see"}
           </p>
           <a href="/user">Edit Info</a>
           {/* Weather Info */}
