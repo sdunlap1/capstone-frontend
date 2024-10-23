@@ -113,7 +113,7 @@ const Dashboard = () => {
           <p>
             <strong>Email:</strong> {user?.email || "Nothing to see"}
           </p>
-          <a href="/user">Edit Info</a>
+          <Link to="/user">Edit Info</Link>
           {/* Weather Info */}
           {weatherData ? (
             <div className="weather-widget">
