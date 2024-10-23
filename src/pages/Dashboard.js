@@ -80,7 +80,7 @@ const Dashboard = () => {
       const city = "Los Angeles"; // You can change this to user's location
       try {
         const response = await axiosInstance.get(
-          `http://10.0.4.23:3003/https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
+          `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
         );
         setWeatherData(response.data);
       } catch (error) {
