@@ -19,7 +19,7 @@ const useAuth = () => {
 
     if (!storedToken && !isPublicRoute) {
       console.log("No token found. Redirecting to login.");
-      navigate("/login"); // Redirect to login only if the route is not public
+      navigate("/"); // Redirect to login only if the route is not public
     } else if (storedToken) {
       console.log("Token found:", storedToken);
       setToken(storedToken);
