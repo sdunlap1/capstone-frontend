@@ -6,13 +6,8 @@ const ProtectedRoute = ({ children }) => {
   const location = useLocation();
 
   if (!token) {
-    // Store the intended path in localStorage before redirecting
-    const currentPath = location.pathname + location.search;
-    console.log('Setting intendedPath in ProtectedRoute:', currentPath);
-    localStorage.setItem('intendedPath', currentPath);
-
-    // Redirect to login if no token is found
-    return <Navigate to="/login" />;
+  // Redirect to login if no token is found
+    return <Navigate to="/" />;
   }
 
   // If token exists, render the child component

@@ -1,11 +1,13 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import CalendarPage from './pages/CalendarPage';
 import UserPage from './pages/UserPage'; 
+import Dashboard from './pages/Dashboard';
 import LoginForm from './components/LoginForm';
 import SignupForm from './components/SignupForm';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar'; 
+import useAuth from './hooks/useAuth';
 import './styles/App.css';
 import './styles/Calendar.css';
 
@@ -17,23 +19,34 @@ const HomePage = () => (
 );
 
 const App = () => {
+  const { token } = useAuth();  // Use the auth hook to check if user is logged in
+
   return (
     <div className="App">
       <Navbar />
       <Routes>
-        <Route path="/" element={
-          <div className="main-content">
-            <HomePage />
+
+        {/* If logged in, redirect from home to dashboard */}
+        <Route path="/" element={token ? <Navigate to="/dashboard" /> : <div className="main-content"><HomePage /></div>} />
+
+        {/* Dashboard route */}
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+
+        {/* Calendar route with date parameter */}
+        <Route path="/calendar/:date?" element={ 
+          <ProtectedRoute>
+            <div className="main-content">
+              <CalendarPage />
             </div>
-          } />  
-        <Route path="/calendar" element={ 
-          <div className="main-content">
-          <ProtectedRoute><CalendarPage /></ProtectedRoute>
-          </div> 
+          </ProtectedRoute> 
         } />
+
+        {/* User profile route */}
         <Route path="/user" element={<ProtectedRoute><UserPage /></ProtectedRoute>} />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/signup" element={<SignupForm />} />
+
+        {/* Unprotected routes */}
+        <Route path="/login" element={token ? <Navigate to="/dashboard" /> : <div className="main-content"><LoginForm /></div>} />
+        <Route path="/signup" element={token ? <Navigate to="/dashboard" /> : <div className="main-content"><SignupForm /></div>} />
       </Routes>
     </div>
   );

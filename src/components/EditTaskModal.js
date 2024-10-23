@@ -1,6 +1,6 @@
 "use strict";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axiosInstance from "../api/axiosInstance";
 import useAuth from "../hooks/useAuth";
 
@@ -14,6 +14,10 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
   const [dueDateError, setDueDateError] = useState(false);
   const [dueTimeError, setDueTimeError] = useState(false);
   const [completed, setCompleted] = useState(false);
+
+  const modalRef = useRef(null); // Track the modal window State
+
+
 
   // Populate fields when modal opens
   useEffect(() => {
@@ -34,6 +38,23 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
       }
     }
   }, [isOpen, event]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Check if the click was outside the modal content
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        handleClose(); // Trigger the same logic as Cancel
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   const handleSave = async () => {
     if (!event?.id) {
@@ -149,7 +170,7 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
 
   return (
     <div className="modal">
-      <div className="modal-content">
+      <div className="modal-content" ref={modalRef}>
         <h2>Edit Task</h2>
         <input
           type="text"

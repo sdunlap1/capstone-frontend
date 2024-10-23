@@ -22,14 +22,8 @@ const LoginForm = () => {
       const user = await login(trimmedUsername, trimmedPassword); // Use trimmed values here
       localStorage.setItem("token", user.token);
 
-      // Check if there's an intended path in localStorage
-      const intendedPath = localStorage.getItem("intendedPath");
-      if (intendedPath) {
-        navigate(intendedPath);
-        localStorage.removeItem("intendedPath"); // Clear the intendedPath from localStorage
-      } else {
-        navigate("/"); // Default to / if no intended path
-      }
+      // Redirect to dashboard by default after login
+      navigate("/dashboard");
     } catch (err) {
       console.error("Login failed:", err);
       setError("Invalid username or password. Please try again.");

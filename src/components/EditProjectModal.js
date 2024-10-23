@@ -1,6 +1,6 @@
 "use strict";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axiosInstance from "../api/axiosInstance";
 import useAuth from "../hooks/useAuth";
 
@@ -15,6 +15,8 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
   const [endDateError, setEndDateError] = useState(false);
   const [alertShown, setAlertShown] = useState(false); // This flag ensures the alert only shows once
   const [completed, setCompleted] = useState(false);
+
+  const modalRef = useRef(null);
   
   useEffect(() => {
     if (isOpen && event?.type === "project") {
@@ -43,6 +45,23 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
       }
     }
   }, [isOpen, event]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Check if the click was outside the modal content
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        handleClose(); // Trigger the same logic as Cancel
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   const handleSave = async () => {
     if (!event?.project_id) {
@@ -167,7 +186,7 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
 
   return (
     <div className="modal">
-      <div className="modal-content">
+      <div className="modal-content" ref={modalRef}>
         <h2>Edit Project</h2>
         <input
           type="text"

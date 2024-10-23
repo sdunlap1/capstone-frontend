@@ -48,9 +48,9 @@ const Navbar = () => {
             <li onClick={handleLinkClick}>
               <Link to="/calendar">Calendar</Link>
             </li>
-            <li onClick={handleLinkClick}>
+            {/* <li onClick={handleLinkClick}>
               <Link to="/user">User Info</Link>
-            </li>
+            </li> */}
             <li>
               <button onClick={logout}>Logout</button>
             </li>
