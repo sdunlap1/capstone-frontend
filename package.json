@@ -16,6 +16,7 @@
     "@fullcalendar/interaction": "^6.1.10",
     "@fullcalendar/react": "^6.1.10",
     "@fullcalendar/timegrid": "^6.1.10",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "axios": "^1.7.7",
     "jwt-decode": "^4.0.0",
     "react": "^18.3.1",
@@ -26,7 +27,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/preset-env": "^7.0.0-beta.51",
     "@babel/preset-react": "^7.0.0-beta.51",
     "babel-loader": "^8.1.0",
