@@ -33,17 +33,20 @@
    DB_PASS=your_db_pass
    DB_HOST=localhost
    JWT_SECRET=your_jwt_secret
-  ```
-3. Run the database migrations and seed data:
-  ```bash
-      sequelize db:migrate
-      sequelize db:seed:all
-  ```
-4. Start the server:
-  ```bash
-   npm start
+   ```
 
-  - The server will run on [http://localhost:3001]
+3. Run the database migrations and seed data:
+   ```bash
+   sequelize db:migrate
+   sequelize db:seed:all
+   ```
+
+4. Start the server:
+   ```bash
+    npm start
+   ```
+
+- The server will run on [http://localhost:3001]
 
 ### Frontend
 1. Navigate to the frontend directory:
@@ -62,6 +65,7 @@
   - Backend tests:
   ```bash
   npm test
+ ```
 
 ### Standard User Flow
 1. **Sign Up/Login:** Users first create an account or log in with existing credentials.
