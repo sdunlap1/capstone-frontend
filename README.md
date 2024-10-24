@@ -27,4 +27,5 @@
    ```bash
    npm install
 2. Set up your environment variables in a .env file:
+    ```DB_NAME=your_db_name
   
