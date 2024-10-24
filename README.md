@@ -67,7 +67,7 @@
 2. **Dashboard:** Once logged in, users are greeted with a dashboard displaying their current tasks and projects, along with a weather forecast.
 3. **Managing Tasks and Projects:** 
     - From the dashboard, users can view current and completed tasks/projects. 
-    - From the calendar users can add, delete, edit or search for tasks and projects. 
+    - From the calendar users can add, delete, edit or search for tasks and projects. Users can click on any day in month, week or 4 day view and be taken to that day in the calendar.
     - Editing tasks and projects can be done by clicking on the task/project, clicking and dragging, or resizing.
 4. **Task/Project Alerts:** The app provides real-time validation, alerting users when they attempt to set unrealistic due dates.
 
