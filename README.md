@@ -24,14 +24,13 @@
 
 ### Backend
 1. Install dependencies:  
-   ```bash```
+   ```bash
    npm install
 2. Set up your environment variables in a .env file:
-    \```
+    ```
       DB_NAME=your_db_name
       DB_USER=your_db_user
       DB_PASS=your_db_pass
 DB_HOST=localhost
 JWT_SECRET=your_jwt_secret
-\```
   
