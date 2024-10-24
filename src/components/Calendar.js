@@ -62,12 +62,13 @@ const Calendar = () => {
           borderColor: task.completed ? "darkgrey" : "rgba(0, 0, 255, 1)",
           classNames: ["task-event", task.completed ? "completed" : ""],
         }));
-        setEvents((prevEvents) => [...prevEvents, ...taskEvents]); // Merge with existing events
+        return taskEvents;
       } else {
         console.error("Tasks is not an array or is undefined:", tasks);
       }
     } catch (error) {
       console.error("Error fetching tasks:", error);
+      return [];
     }
   };
 
@@ -99,24 +100,31 @@ const Calendar = () => {
           backgroundColor: project.completed ? "grey" : "#4CAF50",
           borderColor: project.completed ? "darkgrey" : "darkblue",
         }));
-        setEvents((prevEvents) => [...prevEvents, ...projectEvents]); // Merge with existing events
+        return projectEvents;
       } else {
         console.error("Projects is not an array or is undefined:", projects);
       }
     } catch (error) {
       console.error("Error fetching projects:", error);
+      return [];
     }
   };
 
   // Fetch both tasks and projects as calendar events
   const fetchEvents = async () => {
     setEvents([]); // Clear events before fetching new data
-    await fetchTasks();
-    await fetchProjects();
+    // Clear events before fetching new ones
+    const taskEvents = await fetchTasks();
+    const projectEvents = await fetchProjects();
+
+    // Set fresh events directly (without appending)
+    setEvents([...taskEvents, ...projectEvents]); 
   };
 
   useEffect(() => {
+    if(token) {
     fetchEvents();
+    }
   }, [token, searchTerm]);
 
   // Save view and date when the view or date changes
