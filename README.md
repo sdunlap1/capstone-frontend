@@ -38,12 +38,12 @@
   ```bash
       sequelize db:migrate
       sequelize db:seed:all
-  ```
+      ```
 4. Start the server:
   ```bash
    npm start
 
-  - The server will run on [http://localhost:3001]
+- The server will run on [http://localhost:3001]
 
 ### Frontend
 1. Navigate to the frontend directory:
@@ -55,6 +55,7 @@
 3. Start the frontend:
     ```bash
     npm start
+    ```
 
   - The frontend will run on [http://localhost:3000]
 
