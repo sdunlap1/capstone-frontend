@@ -54,7 +54,8 @@ const useAuth = () => {
     localStorage.removeItem("token"); // Remove token from localStorage
     setToken(null); // Clear token state
     setUser(null);
-    navigate("/"); // Redirect to home page after logging out
+    // navigate("/"); // Redirect to home page after logging out
+    window.location.href = "/"; // Instead of using navigate, this forces a clean reload
   };
 
   return { token, user, loading, logout };
