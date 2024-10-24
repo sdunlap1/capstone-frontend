@@ -27,7 +27,7 @@ const App = () => {
       <Routes>
 
         {/* If logged in, redirect from home to dashboard */}
-        <Route path="/" element={token ? <Navigate to="/dashboard" /> : <div className="main-content"><HomePage /></div>} />
+        <Route path="/" element={token ? <Navigate to="/dashboard" replace /> : <div className="main-content"><HomePage /></div>} />
 
         {/* Dashboard route */}
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
@@ -45,8 +45,8 @@ const App = () => {
         <Route path="/user" element={<ProtectedRoute><UserPage /></ProtectedRoute>} />
 
         {/* Unprotected routes */}
-        <Route path="/login" element={token ? <Navigate to="/dashboard" /> : <div className="main-content"><LoginForm /></div>} />
-        <Route path="/signup" element={token ? <Navigate to="/dashboard" /> : <div className="main-content"><SignupForm /></div>} />
+        <Route path="/login" element={token ? <Navigate to="/dashboard" replace /> : <div className="main-content"><LoginForm /></div>} />
+        <Route path="/signup" element={token ? <Navigate to="/dashboard" replace /> : <div className="main-content"><SignupForm /></div>} />
       </Routes>
     </div>
   );
