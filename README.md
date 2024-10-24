@@ -64,7 +64,7 @@
 
 ### Standard User Flow
 1. **Sign Up/Login:** Users first create an account or log in with existing credentials.
-2. **Dashboard:** Once logged in, users are greeted with a dashboard displaying their current tasks and projects, along with a weather forecast.
+2. **Dashboard:** Once logged in, users are greeted with a dashboard displaying their current and completed tasks and projects, along with a weather forecast.
 3. **Managing Tasks and Projects:** 
     - From the dashboard, users can view current and completed tasks/projects. 
     - From the calendar users can add, delete, edit or search for tasks and projects. Users can click on any day in month, week or 4 day view and be taken to that day in the calendar.
