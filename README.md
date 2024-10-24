@@ -12,7 +12,7 @@
 - **Project Management**: Users can manage projects, including adding/editing tasks within each project.
 - **Alerts and Validations**: Alerts when due dates are in the past or project end dates are before start dates, but users are still able to save.
 - **Weather Information**: Display the current weather forecast for the user's location on the dashboard. **Work in progress.**
-- **Responsive Design**: Works smoothly across different device sizes. **Optimizing for moblie soon**
+- **Responsive Design**: Works smoothly across different device sizes. **Optimizing for moblie soon.**
 
 ## Technology Stack
 - **Frontend**: React.js, Axios for API requests, FullCalendar for task/project scheduling, and a weather API for fetching live data.
