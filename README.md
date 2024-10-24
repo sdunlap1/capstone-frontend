@@ -24,7 +24,7 @@
 
 ### Backend
 1. Install dependencies:  
-   ```bash
+   ```bash```
    npm install
 2. Set up your environment variables in a .env file:
     \```
