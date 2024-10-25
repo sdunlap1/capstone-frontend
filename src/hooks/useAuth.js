@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
+import checkTokenExpiration from "../components/checkTokenExpiration";
 
 const useAuth = () => {
   console.log("useAuth hook invoked");
@@ -11,6 +12,8 @@ const useAuth = () => {
   const location = useLocation();
 
   useEffect(() => {
+    checkTokenExpiration();
+
     const storedToken = localStorage.getItem("token");
 
     // Check for the token, but don't redirect from the home or public pages

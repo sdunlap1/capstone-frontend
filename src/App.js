@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import CalendarPage from './pages/CalendarPage';
 import UserPage from './pages/UserPage'; 
@@ -8,6 +8,7 @@ import SignupForm from './components/SignupForm';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar'; 
 import useAuth from './hooks/useAuth';
+import checkTokenExpiration from './components/checkTokenExpiration';
 import './styles/App.css';
 import './styles/Calendar.css';
 
@@ -20,6 +21,10 @@ const HomePage = () => (
 
 const App = () => {
   const { token } = useAuth();  // Use the auth hook to check if user is logged in
+
+  useEffect(() => {
+    checkTokenExpiration();
+  }, []);
 
   return (
     <div className="App">
