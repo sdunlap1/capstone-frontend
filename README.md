@@ -18,7 +18,7 @@
 - **Frontend**: React.js, Axios for API requests, FullCalendar for task/project scheduling, and a weather API for fetching live data.
 - **Backend**: Node.js for building the RESTful API, Sequelize ORM for database management, PostgreSQL for database, and JWT for authentication.
 - **Testing**: Insomnia and Bruno for testing the backend API routes.
-- **Deployment**: Deployed to Render (https://capstone-frontend-y6ub.onrender.com/).
+- **Deployment**: Deployed to Render [] (https://capstone-frontend-y6ub.onrender.com/).
 
 ## How to Run the Project
 
