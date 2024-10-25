@@ -1,7 +1,7 @@
 # Capstone Project: Task Manager
 
 ## Live Link
-[https://capstone-frontend-y6ub.onrender.com/]
+[Capstone Project](https://capstone-frontend-y6ub.onrender.com/)
 
 ## Description
 - This project is a full-stack Task/Project Manager application that helps users keep track of their tasks and projects. It allows users to create, edit, delete, and manage tasks and projects efficiently, with due dates, descriptions, and time tracking. The application provides user authentication and ensures that users can only view and edit their own tasks and projects.
@@ -24,21 +24,22 @@
 
 ### Backend
 1. Install dependencies:  
-   ```bash
-    npm install
+```bash
+npm install
+```
 2. Set up your environment variables in a .env file:
-   ```
-   DB_NAME=your_db_name
-   DB_USER=your_db_user
-   DB_PASS=your_db_pass
-   DB_HOST=localhost
-   JWT_SECRET=your_jwt_secret
-   ```
+```
+DB_NAME=your_db_name
+DB_USER=your_db_user
+DB_PASS=your_db_pass
+DB_HOST=localhost
+JWT_SECRET=your_jwt_secret
+```
 
-4. Start the server:
-   ```bash
-    npm start
-   ```
+3. Start the server:
+```bash
+npm start
+```
 - Sequeliz will create the tables on server start.
 - The server will run on [http://localhost:3001]
 
