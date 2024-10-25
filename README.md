@@ -59,10 +59,10 @@ npm start
 4. The frontend will run on [http://localhost:3000]
 
 ### Running tests:
-  - Backend tests:
-  ```bash
-  npm test
-  ```
+- Backend tests:
+```bash
+npm test
+```
 
 ### Standard User Flow
 1. **Sign Up/Login:** Users first create an account or log in with existing credentials.
