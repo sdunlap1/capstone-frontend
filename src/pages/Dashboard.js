@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import useAuth from "../hooks/useAuth";
 import axiosInstance from "../api/axiosInstance";
 import "../styles/App.css";
+
+const defaultZipCode = "67050";
 
 const Dashboard = () => {
   const { token } = useAuth();
@@ -12,6 +15,10 @@ const Dashboard = () => {
   const [outstandingProjects, setOutstandingProjects] = useState([]);
   const [completedProjects, setCompletedProjects] = useState([]);
   const [weatherData, setWeatherData] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [zipCode, setZipCode] = useState(
+    localStorage.getItem("zip_code") || ""
+  );
 
   // Fetch tasks from the backend and separate them into outstanding and completed
   const fetchTasks = async () => {
@@ -67,28 +74,74 @@ const Dashboard = () => {
     }
   };
 
-  // UseEffect to fetch tasks and projects when the component mounts
+  // UseEffect to fetch tasks, projects and zip code when the component mounts
   useEffect(() => {
     fetchTasks();
     fetchProjects();
+    fetchZipCode();
   }, [token]);
 
-  // Fetch weather data
-  useEffect(() => {
-    const fetchWeather = async () => {
-      const apiKey = "7802107913c1661a17d9525eec1dd69f"; // Add your API key here
-      const city = "Los Angeles"; // You can change this to user's location
-      try {
-        const response = await axiosInstance.get(
-          `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
-        );
-        setWeatherData(response.data);
-      } catch (error) {
-        console.error("Error fetching weather data:", error);
+  // Fetch the user's zip code from the backend
+  const fetchZipCode = async () => {
+    try {
+      const storedZip = localStorage.getItem("zip_code");
+      if (storedZip) {
+        fetchWeather(storedZip);
+      } else {
+        const response = await axiosInstance.get("/user");
+        const zip = response.data.zip_code || defaultZipCode;
+        setZipCode(zip); // Set the zip code in state
+        localStorage.setItem("zip_code", zip); // Save zip code to localStorage for persistence
+        fetchWeather(zip);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching zip code:", error);
+      fetchWeather("defaultZipCode");
+    }
+  };
 
-    fetchWeather();
+  // Update the user's zip code in the backend and localStorage
+  const updateZipCode = async (zip) => {
+    try {
+      await axiosInstance.put("/user", { zip_code: zip });
+      localStorage.setItem("zip_code", zip); // Save to localStorage
+    } catch (error) {
+      console.error("Error updating zip code:", error);
+    }
+  };
+
+  // Fetch weather data for current zip code
+  const fetchWeather = async (zip) => {
+    const apiKey = "7802107913c1661a17d9525eec1dd69f"; // Add your API key here
+    if (!zip) {
+      console.error("Zip code is empty, cannot fetch weather data.");
+      return;
+    }
+    try {
+      const response = await axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?zip=${zipCode},us&appid=${apiKey}&units=imperial`
+      );
+      setWeatherData(response.data);
+    } catch (error) {
+      console.error("Error fetching weather data:", error);
+    }
+  };
+  // Submit the form to update the zip code
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!zipCode.trim()) {
+      setErrorMessage("Please enter a valid zip code.");
+      return;
+    }
+    setErrorMessage("");
+    updateZipCode(zipCode); // Save the zip code to the backend and localStorage
+    fetchWeather(zipCode); // Fetch weather for the updated zip code immediately
+    setZipCode("");
+  };
+  // Clear the input field on page load or refresh
+  useEffect(() => {
+    setZipCode(""); // Clear the input field on page load or refresh
   }, []);
 
   if (loading) {
@@ -101,7 +154,6 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-wrapper">
-      {" "}
       {/* Add this wrapper for centering */}
       <div className="dashboard-container">
         {/* Your user info, tasks/projects, and weather sections */}
@@ -114,14 +166,30 @@ const Dashboard = () => {
             <strong>Email:</strong> {user?.email || "Nothing to see"}
           </p>
           <Link to="/user">Edit Info</Link>
-          {/* Weather Info */}
           {weatherData ? (
             <div className="weather-widget">
               <h3>Weather in {weatherData.name}</h3>
-              <p>{weatherData.weather[0].description}</p>
-              <p>Temperature: {weatherData.main.temp}°C</p>
-              <p>Humidity: {weatherData.main.humidity}%</p>
-              <p>Wind: {weatherData.wind.speed} m/s</p>
+              <p>
+                <img
+                  src={`http://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
+                  alt={weatherData.weather[0].description}
+                />
+              </p>
+              <p>
+                {Math.round(weatherData.main.temp)}°F
+                <br />
+                Wind: {weatherData.wind.speed} m/s
+              </p>
+              <form onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  placeholder="Enter Zip Code"
+                  value={zipCode}
+                  onChange={(e) => setZipCode(e.target.value)} // Update zip code state
+                />
+                {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+                <button type="submit">Get Weather</button>
+              </form>{" "}
             </div>
           ) : (
             <p>Loading weather data...</p>
