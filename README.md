@@ -45,23 +45,24 @@ npm start
 
 ### Frontend
 1. Navigate to the frontend directory:
-    ```bash
-    cd frontend
+```bash
+cd frontend
+```
 2. Install dependencies:
-    ```bash
-    npm install
+```bash
+npm install
+```
 3. Start the frontend:
-    ```bash
-    npm start
-    ```
-
-  - The frontend will run on [http://localhost:3000]
+```bash
+npm start
+```
+4. The frontend will run on [http://localhost:3000]
 
 ### Running tests:
   - Backend tests:
   ```bash
   npm test
- ```
+  ```
 
 ### Standard User Flow
 1. **Sign Up/Login:** Users first create an account or log in with existing credentials.
