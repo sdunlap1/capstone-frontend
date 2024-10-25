@@ -34,7 +34,7 @@ const SignupForm = () => {
       localStorage.setItem("token", token);
 
       // Redirect to user page after signup
-      navigate("/user");
+      navigate("/dashboard");
     } catch (error) {
       console.error("Error signing up:", error);
 
