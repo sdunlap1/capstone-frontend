@@ -11,7 +11,7 @@
 - **Task Management**: Users can add, edit, and delete tasks with customizable due dates, descriptions, and time.
 - **Project Management**: Users can manage projects, including adding/editing tasks within each project.
 - **Alerts and Validations**: Alerts when due dates are in the past or project end dates are before start dates, but users are still able to save.
-- **Weather Information**: Display the current weather forecast for the user's location on the dashboard. **Work in progress.**
+- **Weather Information**: Display the current weather forecast for the user's location on the dashboard. **Now working.**
 - **Responsive Design**: Works smoothly across different device sizes. **Optimizing for moblie soon.**
 
 ## Technology Stack
