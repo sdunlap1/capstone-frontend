@@ -4,7 +4,6 @@ import axiosInstance from "../api/axiosInstance";
 import checkTokenExpiration from "../components/checkTokenExpiration";
 
 const useAuth = () => {
-  console.log("useAuth hook invoked");
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -12,7 +11,14 @@ const useAuth = () => {
   const location = useLocation();
 
   useEffect(() => {
-    checkTokenExpiration();
+    const expiration = checkTokenExpiration();
+
+    // If token is expired remove and update state
+    if (!expiration) {
+      localStorage.removeItem("token");
+      setToken(null);
+      setUser(null);
+    }
 
     const storedToken = localStorage.getItem("token");
 
@@ -21,10 +27,8 @@ const useAuth = () => {
     const isPublicRoute = publicRoutes.includes(location.pathname);
 
     if (!storedToken && !isPublicRoute) {
-      console.log("No token found. Redirecting to login.");
       navigate("/"); // Redirect to login only if the route is not public
     } else if (storedToken) {
-      console.log("Token found:", storedToken);
       setToken(storedToken);
 
       // Fetch user info after the token is set
@@ -36,7 +40,6 @@ const useAuth = () => {
             },
           });
           setUser(response.data); // Set the user info (username and email)
-          console.log("User info fetched:", response.data);
         } catch (error) {
           console.error("Error fetching user info:", error);
           navigate("/login"); // Redirect to login on error
@@ -53,7 +56,6 @@ const useAuth = () => {
 
   // Logout functionality to clear token
   const logout = () => {
-    console.log("Logging out...");
     localStorage.removeItem("token"); // Remove token from localStorage
     setToken(null); // Clear token state
     setUser(null);
