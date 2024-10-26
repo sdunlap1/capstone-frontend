@@ -124,9 +124,7 @@ const Dashboard = () => {
       setWeatherData(response.data);
     } catch (error) {
       console.error("Error fetching weather data:", error);
-      if (validZip !== defaultZipCode) {
         fetchWeather(defaultZipCode); // Fallback to default only if not already using it
-      }
     }
   };
   // Submit the form to update the zip code
