@@ -96,7 +96,7 @@ const Dashboard = () => {
       }
     } catch (error) {
       console.error("Error fetching zip code:", error);
-      fetchWeather("defaultZipCode");
+      fetchWeather(defaultZipCode);
     }
   };
 
@@ -119,11 +119,14 @@ const Dashboard = () => {
     }
     try {
       const response = await axios.get(
-        `https://api.openweathermap.org/data/2.5/weather?zip=${zipCode},us&appid=${apiKey}&units=imperial`
+        `https://api.openweathermap.org/data/2.5/weather?zip=${zip},us&appid=${apiKey}&units=imperial`
       );
       setWeatherData(response.data);
     } catch (error) {
       console.error("Error fetching weather data:", error);
+      if (validZip !== defaultZipCode) {
+        fetchWeather(defaultZipCode); // Fallback to default only if not already using it
+      }
     }
   };
   // Submit the form to update the zip code
