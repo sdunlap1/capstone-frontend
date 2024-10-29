@@ -27,7 +27,7 @@
 }
 
 .delete-button:hover {
-  background-color: #c9302c;
+  background-color: #c9302c !important;
 }
 
 .modal-content button {
@@ -81,9 +81,9 @@
   font-size: 0.9rem;
   margin-top: 0.2rem;
 }
-/* ############################ 
+/* ---------------------------
 Styling the Calendar search bar
-############################ */
+---------------------------- */
 
 .search-container {
   margin: 0 auto;
@@ -173,18 +173,20 @@ end styling the Calendar search bar
   justify-content: center;
 }
 
-/* Use this styling for month view all other views are 
-handled in fetchTasks in Calendar.js */
+/* ------------------------------------------------
+Use this styling for month view all other views are 
+handled in fetchTasks in Calendar.js 
+------------------------------------------------- */
 
 /* non completed tasks */
 .task-event {
-  background-color: rgba(0, 0, 255, 0.5); 
+  background-color: rgba(0, 0, 255, 0.5) !important; 
   border-color: rgba(0, 0, 255, 1);
   color: #FFF;
 }
-/* Style for completed tasks */
+/* completed tasks */
 .task-event.completed {
-  background-color: grey; 
+  background-color: grey !important; 
   border-color: darkgrey; 
 }
 
