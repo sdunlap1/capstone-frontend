@@ -12,6 +12,8 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
   const [description, setDescription] = useState("");
   const [titleError, setTitleError] = useState(false);
   const [dueDateError, setDueDateError] = useState(false);
+  const [savedMessage, setSavedMessage] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   
   const modalRef = useRef(null); // Used to track the modal window state.
 
@@ -35,6 +37,7 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
   }, [isOpen]);
 
   const handleSave = async () => {
+    if (isSaving) return;
     let hasError = false;
 
     // Clear previous error messages
@@ -74,6 +77,7 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
     }
 
     try {
+      setIsSaving(true); // Set cooldown
       // Format the due date to include time
       const localDueDate = new Date(`${dueDate}T${dueTime}`);
       const formattedDueDate = localDueDate.toISOString(); // Converts to full ISO format for database
@@ -93,10 +97,18 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
       );
 
       onTaskAdded(); // Refresh the calendar with the new task
-      handleCancel(); // Clear all fields on Cancel
+      setSavedMessage(true); 
+      
+      setTimeout(() => {
+        setSavedMessage(false);
+        setIsSaving(false);
+        handleCancel(); // Clear all fields on Cancel
+      }, 3000);
+
     } catch (error) {
       console.error("Error adding task:", error);
       alert("Failed to add the task. Please try again.");
+      setIsSaving(false);
     }
   };
 
@@ -117,6 +129,12 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
     <div className="modal top-modal">
       <div className="modal-content" ref={modalRef}>
         <h2>Add New Task</h2>
+        {/* Saved Message */}
+        {savedMessage && (
+          <div className="saved-message">
+            Task saved successfully!
+          </div>
+        )}
         <label>Task Title</label>
         <input
           type="text"
@@ -148,7 +166,7 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <button onClick={handleSave}>Save</button>
+        <button onClick={handleSave} disabled={isSaving}>Save</button>
         <button onClick={handleCancel}>Cancel</button>
       </div>
     </div>
