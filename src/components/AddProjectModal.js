@@ -11,6 +11,8 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
   const [nameError, setNameError] = useState(false);
   const [startDateError, setStartDateError] = useState(false);
   const [dueDateError, setDueDateError] = useState(false);
+  const [savedMessage, setSavedMessage] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const modalRef = useRef(null);
 
@@ -34,6 +36,7 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
   }, [isOpen]);
 
   const handleSave = async () => {
+    if (isSaving) return;
     let hasError = false;
 
     // Clear previous error messages
@@ -80,6 +83,7 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
     }
 
     try {
+      setIsSaving(true);
       await axiosInstance.post(
         "/projects",
         {
@@ -96,12 +100,20 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
       );
 
       onProjectAdded(); // Refresh the calendar
-      handleCancel(); // Clear all fields on cancel
+      setSavedMessage(true);
+
+      setTimeout(() => {
+        setSavedMessage(false);
+        setIsSaving(false);
+        handleCancel(); // Clear all fields on cancel
+      }, 3000);
     } catch (error) {
       console.error("Error adding project:", error);
       alert("Failed to add the project. Please try again.");
+      setIsSaving(false);
     }
   };
+
   const handleCancel = () => {
     setName("");
     setDescription("");
@@ -119,6 +131,12 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
   return (
     <div className="modal top-modal">
       <div className="modal-content" ref={(modalRef)}>
+        {/* Saved Message */}
+        {savedMessage && (
+          <div className="saved-message">
+            Project saved successfully!
+          </div>
+        )}
         <h2>Add New Project</h2>
         <input
           type="text"
@@ -154,7 +172,7 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
         {dueDateError && (
           <span className="error-text">End date is required</span>
         )}
-        <button onClick={handleSave}>Save</button>
+        <button onClick={handleSave} disabled={isSaving}>Save</button>
         <button onClick={handleCancel}>Cancel</button>
       </div>
     </div>
