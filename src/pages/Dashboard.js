@@ -204,12 +204,12 @@ const Dashboard = () => {
           ) : (
             <>
               {outstandingTasks.map((task) => (
-                <p key={task.id} className="outstanding">
+                <p key={task.task_id} className="outstanding">
                   {task.title}
                 </p> // Apply outstanding class
               ))}
               {outstandingProjects.map((project) => (
-                <p key={project.id} className="outstanding">
+                <p key={project.project_id} className="outstanding">
                   {project.name}
                 </p> // Apply outstanding class
               ))}
@@ -222,12 +222,12 @@ const Dashboard = () => {
           ) : (
             <>
               {completedTasks.map((task) => (
-                <p key={task.id} className="completed">
+                <p key={task.task_id} className="completed">
                   {task.title}
                 </p> // Apply completed class
               ))}
               {completedProjects.map((project) => (
-                <p key={project.id} className="completed">
+                <p key={project.project_id} className="completed">
                   {project.name}
                 </p> // Apply completed class
               ))}

@@ -50,7 +50,7 @@ const Calendar = () => {
 
       if (Array.isArray(tasks)) {
         const taskEvents = tasks.map((task) => ({
-          id: `task-${task.id}`,
+          id: `task-${task.task_id}`,
           title: task.title,
           start: task.due_date,
           description: task.description || "",
