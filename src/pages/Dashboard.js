@@ -159,7 +159,14 @@ const Dashboard = () => {
       <div className="dashboard-container">
         {/* Your user info, tasks/projects, and weather sections */}
         <div className="left-column">
+          <div className="current-user">
           <h3>User Info</h3>
+          <p>
+            <strong>First Name:</strong> {user?.first_name || "First Name"}
+          </p>
+          <p>
+          <strong>Last Name:</strong> {user?.last_name || "Last Name"}
+          </p>
           <p>
             <strong>Username:</strong> {user?.username || "Guest"}
           </p>
@@ -167,6 +174,7 @@ const Dashboard = () => {
             <strong>Email:</strong> {user?.email || "Nothing to see"}
           </p>
           <Link to="/user">Edit Info</Link>
+          </div>
           {weatherData ? (
             <div className="weather-widget">
               <h3>Weather in {weatherData.name}</h3>

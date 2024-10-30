@@ -6,17 +6,26 @@ const SignupForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [errors, setErrors] = useState([]);
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
-
     const trimmedUsername = username.trim();
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
+    const trimmedFirstName = firstName.trim();
+    const trimmedLastName = lastName.trim();
 
-    if (!trimmedUsername || !trimmedEmail || !trimmedPassword) {
+    if (
+      !trimmedUsername ||
+      !trimmedEmail ||
+      !trimmedPassword ||
+      !trimmedFirstName ||
+      !trimmedLastName
+    ) {
       alert("Please fill out all fields.");
       return;
     }
@@ -26,6 +35,8 @@ const SignupForm = () => {
         username: trimmedUsername,
         email: trimmedEmail,
         password: trimmedPassword,
+        first_name: trimmedFirstName,
+        last_name: trimmedLastName,
       });
 
       const { token } = response.data;
@@ -44,9 +55,13 @@ const SignupForm = () => {
 
         // Separate checks for username and email already in use
         if (errorMessage === "Username already taken") {
-          setErrors([{ msg: "The username is already taken. Please choose another." }]);
+          setErrors([
+            { msg: "The username is already taken. Please choose another." },
+          ]);
         } else if (errorMessage === "Email already in use") {
-          setErrors([{ msg: "The email is already in use. Please choose another." }]);
+          setErrors([
+            { msg: "The email is already in use. Please choose another." },
+          ]);
         } else if (error.response.data.errors) {
           // Handle validation errors for empty fields, invalid email, and short password
           setErrors(error.response.data.errors);
@@ -60,45 +75,65 @@ const SignupForm = () => {
   return (
     <div className="form-container">
       <div className="form-box">
-      <h1 className="heading">Signup</h1>
-    {/* Display all errors */}
-    {errors.length > 0 && (
-        <div style={{ color: 'red' }}>
-          {errors.map((error, index) => (
-            <p key={index}>{error.msg}</p>
-          ))}
-        </div>
-      )}
-      <form onSubmit={handleSignup}>
-        <div>
-          <label>Username:</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button className="auth-button" type="submit">Sign Up</button>
-      </form>
+        <h1 className="heading">Signup</h1>
+        {/* Display all errors */}
+        {errors.length > 0 && (
+          <div style={{ color: "red" }}>
+            {errors.map((error, index) => (
+              <p key={index}>{error.msg}</p>
+            ))}
+          </div>
+        )}
+        <form onSubmit={handleSignup}>
+           <div>
+            <label>First Name:</label>
+            <input
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label>Last Name:</label>
+            <input
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label>Username:</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label>Email:</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label>Password:</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button className="auth-button" type="submit">
+            Sign Up
+          </button>
+        </form>
       </div>
     </div>
   );

@@ -5,6 +5,8 @@ import useAuth from "../hooks/useAuth";
 const UserPage = () => {
   const { token, user } = useAuth(); // Extract token and user from useAuth hook
   const [userInfo, setUserInfo] = useState(null);
+  const [firstName, setFirstName] = useState(""); // State for first name
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -34,25 +36,36 @@ const UserPage = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     // Trim the values to ensure no whitespace is treated as a valid input
+    const trimmedFirstName = firstName.trim();
+    const trimmedLastName = lastName.trim();
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
 
     // Check if both email and password fields are empty
-    if (!trimmedEmail && !trimmedPassword) {
+    if (
+      !trimmedFirstName &&
+      !trimmedLastName &&
+      !trimmedEmail &&
+      !trimmedPassword
+    ) {
       setErrorMessage("At least one field (email or password) is required.");
       return;
     }
 
     try {
       const updatedInfo = {
-        email: trimmedEmail ? trimmedEmail : userInfo.email,  // Keep original email if field is empty
-        ...(trimmedPassword && { password: trimmedPassword }), 
+        first_name: trimmedFirstName || userInfo.first_name,
+        last_name: trimmedLastName || userInfo.last_name,
+        email: trimmedEmail ? trimmedEmail : userInfo.email, // Keep original email if field is empty
+        ...(trimmedPassword && { password: trimmedPassword }),
       };
 
       await axiosInstance.put("/user", updatedInfo); // Send the updated data to the backend
 
       setSuccessMessage("User information updated successfully!");
       setErrorMessage("");
+      setFirstName("");
+      setLastName("");
       setEmail("");
       setPassword("");
     } catch (error) {
@@ -77,41 +90,72 @@ const UserPage = () => {
 
   return (
     <div className="form-container">
-    <div className="user-info">
-      <h1 className="heading">User Information</h1>
-      <p className="heading-info">
-        <strong>Username:</strong> {userInfo.username}
-      <br />
-        <strong>Email:</strong> {userInfo.email}
-      </p>
+      <div className="user-info">
+        <h1 className="heading">User Information</h1>
+        <p className="heading-info">
+          <strong>First Name:</strong> {userInfo.first_name}
+          <br />
+          <strong>Last Name:</strong> {userInfo.last_name}
+          <br />
+          <strong>Username:</strong> {userInfo.username}
+          <br />
+          <strong>Email:</strong> {userInfo.email}
+        </p>
 
-      <h1 className="heading">Edit Your Information</h1>
+        <h1 className="heading">Edit Your Information</h1>
 
-      {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
-      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+        {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
+        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
 
-      <form onSubmit={handleSave}>
-        <label>
-          Email:
-          <input className="edit-info"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          New Password:
-          <input className="edit-info"
-            type="password"
-            placeholder="Leave blank if you don't want to change"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        <br />
-        <button className="auth-button" type="submit">Save Changes</button>
-      </form>
+        <form onSubmit={handleSave}>
+          <label>
+            First Name:
+            <input
+              className="edit-info"
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="Change First Name"
+            />
+          </label>
+          <br />
+          <label>
+            Last Name:
+            <input
+              className="edit-info"
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Change Last Name"
+            />
+          </label>
+          <br />
+          <label>
+            Email:
+            <input
+              className="edit-info"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Change Email Address"
+            />
+          </label>
+          <br />
+          <label>
+            New Password:
+            <input
+              className="edit-info"
+              type="password"
+              placeholder="Leave blank if you don't want to change"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </label>
+          <br />
+          <button className="auth-button" type="submit">
+            Save Changes
+          </button>
+        </form>
       </div>
     </div>
   );

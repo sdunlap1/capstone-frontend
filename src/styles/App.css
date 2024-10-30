@@ -157,6 +157,13 @@ Styling for Dashboard
 }
 
 /* Left Column: User Info */
+.current-user {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.8);
+  text-align: left;
+  padding: 20px;
+}
 .left-column {
   background-color: #f9f9f9;
   padding: 20px;
@@ -263,13 +270,17 @@ Styling for Dashboard
 End Styling for Dashboard
 /* ######################
 
-/* styling for login and signup pages */
+/* ###############################
+styling for login and signup pages
+############################### */
+
 /* Center the form on the page */
 .form-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 150px);
+  min-height: 100%;
+  margin-top: 80px;
   background-color: #f5f5f5;
 }
 
