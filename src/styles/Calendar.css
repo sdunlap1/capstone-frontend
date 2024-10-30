@@ -1,21 +1,30 @@
 /* Add some padding to the main content to avoid being hidden by the navbar */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999; /* Ensure it sits behind the modal but above other content */
+}
 
 .modal {
-  position: fixed;
-  top: 10%;
-  left: 50%;
-  transform: translate(-50%, 0);
   background: white;
   border: 1px solid #ccc;
-  padding: 20px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
 
+/* Adding padding here stops modal from closing on edge click */
 .modal-content {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
+  padding: 20px; 
 }
 
 .delete-button {

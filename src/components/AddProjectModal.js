@@ -129,7 +129,8 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal top-modal">
+    <div className="modal-backdrop">
+    <div className="modal">
       <div className="modal-content" ref={(modalRef)}>
         {/* Saved Message */}
         {savedMessage && (
@@ -175,6 +176,7 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
         <button onClick={handleSave} disabled={isSaving}>Save</button>
         <button onClick={handleCancel}>Cancel</button>
       </div>
+    </div>
     </div>
   );
 };

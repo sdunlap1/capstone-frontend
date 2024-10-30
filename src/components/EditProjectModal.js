@@ -46,6 +46,15 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
     }
   }, [isOpen, event]);
 
+
+  const handleClose = () => {
+    // Clear error messages
+    setNameError(false);
+    setStartDateError(false);
+    setEndDateError(false);
+    onClose();
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       // Check if the click was outside the modal content
@@ -61,7 +70,7 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen]);
+  }, [isOpen, handleClose]);
 
   const handleSave = async () => {
     if (!event?.project_id) {
@@ -174,19 +183,14 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
     }
   };
 
-  const handleClose = () => {
-    // Clear error messages
-    setNameError(false);
-    setStartDateError(false);
-    setEndDateError(false);
-    onClose();
-  };
-
   if (!isOpen) return null;
 
   return (
+    <div className="modal-backdrop" onClick={handleClose}>
     <div className="modal">
-      <div className="modal-content" ref={modalRef}>
+      <div className="modal-content" ref={modalRef} onClick={(e) =>
+        e.stopPropagation()
+      }>
         <h2>Edit Project</h2>
         <input
           type="text"
@@ -234,6 +238,7 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
         </button>
         <button onClick={handleClose}>Cancel</button>
       </div>
+    </div>
     </div>
   );
 };

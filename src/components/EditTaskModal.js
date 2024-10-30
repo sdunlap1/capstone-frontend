@@ -14,10 +14,10 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
   const [dueDateError, setDueDateError] = useState(false);
   const [dueTimeError, setDueTimeError] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [savedMessage, setSavedMessage] = useState(false);
 
   const modalRef = useRef(null); // Track the modal window State
-
-
 
   // Populate fields when modal opens
   useEffect(() => {
@@ -57,6 +57,8 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
   }, [isOpen]);
 
   const handleSave = async () => {
+    if (isSaving) return;
+
     if (!event?.id) {
       alert("Task ID is missing. Cannot save changes.");
       return;
@@ -120,19 +122,27 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
     }
 
     try {
-      console.log("Due Date being sent:", updatedFields);
+      setIsSaving(true);
+
       await axiosInstance.put(`/tasks/${event.id}`, updatedFields, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      alert("Task updated successfully!");
       onTaskUpdated(); // Refresh the task list
-      onClose(); // Close the modal
+      setSavedMessage(true);
+
+      setTimeout(() => {
+        setSavedMessage(false);
+        setIsSaving(false);
+        handleClose();
+      }, 2000);
     } catch (error) {
       console.error("Error updating task:", error);
       alert("Failed to update the task. Please try again.");
+      setIsSaving(false);
+      return;
     }
   };
 
@@ -169,58 +179,70 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal">
-      <div className="modal-content" ref={modalRef}>
-        <h2>Edit Task</h2>
-        <input
-          type="text"
-          placeholder="Task Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        {titleError && (
-          <span className="error-text">Task title is required</span>
-        )}
-
-        <label>Due Date</label>
-        <input
-          type="date"
-          value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
-        />
-        {dueDateError && (
-          <span className="error-text">Due date is required</span>
-        )}
-
-        <label>Time</label>
-        <input
-          type="time"
-          value={dueTime}
-          onChange={(e) => setDueTime(e.target.value)}
-        />
-        {dueTimeError && <span className="error-text">Time is required</span>}
-
-        <textarea
-          placeholder="Task Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <label>
+    <div className="modal-backdrop" onClick={handleClose}>
+      <div className="modal">
+        <div
+          className="modal-content"
+          ref={modalRef}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Saved Message */}
+          {savedMessage && (
+            <div className="saved-message">Task updated successfully!</div>
+          )}
+          <h2>Edit Task</h2>
           <input
-            type="checkbox"
-            checked={completed} // Checkbox to mark as complete
-            onChange={(e) => {
-              setCompleted(e.target.checked);
-              console.log("Completed state changed to:", e.target.checked);
-            }}
+            type="text"
+            placeholder="Task Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
-          Mark as Completed
-        </label>
-        <button onClick={handleSave}>Save</button>
-        <button className="delete-button" onClick={handleDelete}>
-          Delete
-        </button>
-        <button onClick={handleClose}>Cancel</button>
+          {titleError && (
+            <span className="error-text">Task title is required</span>
+          )}
+
+          <label>Due Date</label>
+          <input
+            type="date"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+          />
+          {dueDateError && (
+            <span className="error-text">Due date is required</span>
+          )}
+
+          <label>Time</label>
+          <input
+            type="time"
+            value={dueTime}
+            onChange={(e) => setDueTime(e.target.value)}
+          />
+          {dueTimeError && <span className="error-text">Time is required</span>}
+
+          <textarea
+            placeholder="Task Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <label>
+            <input
+              type="checkbox"
+              checked={completed} // Checkbox to mark as complete
+              onChange={(e) => {
+                setCompleted(e.target.checked);
+                console.log("Completed state changed to:", e.target.checked);
+              }}
+            />
+            Mark as Completed
+          </label>
+          <button onClick={handleSave} disabled={isSaving}>
+            Save
+          </button>
+          <button className="delete-button" onClick={handleDelete}>
+            Delete
+          </button>
+          <button onClick={handleClose}>Cancel</button>
+        </div>
       </div>
     </div>
   );

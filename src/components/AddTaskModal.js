@@ -21,7 +21,7 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
     const handleClickOutside = (event) => {
       // Check if the click was outside the modal content
       if (modalRef.current && !modalRef.current.contains(event.target)) {
-        handleCancel(); // Trigger the same logic as Cancel
+        handleClose(); // Trigger the same logic as Cancel
       }
     };
 
@@ -102,7 +102,7 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
       setTimeout(() => {
         setSavedMessage(false);
         setIsSaving(false);
-        handleCancel(); // Clear all fields on Cancel
+        handleClose(); // Clear all fields on Cancel
       }, 3000);
 
     } catch (error) {
@@ -112,7 +112,7 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
     }
   };
 
-  const handleCancel = () => {
+  const handleClose = () => {
     setTitle("");
     setDueDate(selectedDate || ""); // Reset the date
     setDueTime(""); // Reset the time to the default value
@@ -126,7 +126,8 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal top-modal">
+    <div className="modal-backdrop">
+    <div className="modal">
       <div className="modal-content" ref={modalRef}>
         <h2>Add New Task</h2>
         {/* Saved Message */}
@@ -167,8 +168,9 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
           onChange={(e) => setDescription(e.target.value)}
         />
         <button onClick={handleSave} disabled={isSaving}>Save</button>
-        <button onClick={handleCancel}>Cancel</button>
+        <button onClick={handleClose}>Cancel</button>
       </div>
+    </div>
     </div>
   );
 };
