@@ -118,12 +118,12 @@ const Calendar = () => {
     const projectEvents = await fetchProjects();
 
     // Set fresh events directly (without appending)
-    setEvents([...taskEvents, ...projectEvents]); 
+    setEvents([...taskEvents, ...projectEvents]);
   };
 
   useEffect(() => {
-    if(token) {
-    fetchEvents();
+    if (token) {
+      fetchEvents();
     }
   }, [token, searchTerm]);
 
@@ -156,6 +156,9 @@ const Calendar = () => {
   const handleEventClick = (clickInfo) => {
     const { id, title, extendedProps } = clickInfo.event;
 
+    // Simulate an outside click to close the popover
+    document.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+
     // Safely extract the start and end dates
     const start = clickInfo.event.start
       ? new Date(clickInfo.event.start)
@@ -166,7 +169,7 @@ const Calendar = () => {
       // Ensure dates are properly handled
       const formattedDueDate = start ? start.toLocaleDateString("en-US") : "";
       setSelectedEvent({
-        id: id.replace("task-", ""), // Extract task ID
+        task_id: id.replace("task-", ""), // Extract task ID
         title: title || "", // Pre-fill the task title
         due_date: formattedDueDate,
         completed: extendedProps.completed ?? false,
@@ -234,6 +237,7 @@ const Calendar = () => {
     } catch (error) {
       console.error("Error updating project:", error);
       alert("Failed to update project. Please try again.");
+      return;
     }
   };
 
