@@ -42,6 +42,7 @@ const useAuth = () => {
           setUser(response.data); // Set the user info (username and email)
         } catch (error) {
           console.error("Error fetching user info:", error);
+          localStorage.removeItem('tokem');
           navigate("/"); // Redirect to login on error
         } finally {
           setLoading(false); // Mark loading as complete
