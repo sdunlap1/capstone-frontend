@@ -162,10 +162,10 @@ const Dashboard = () => {
           <div className="current-user">
           <h3>User Info</h3>
           <p>
-            <strong>First Name:</strong> {user?.first_name || "First Name"}
+            <strong>First Name:</strong> {user?.first_name || "Don't be shy,"}
           </p>
           <p>
-          <strong>Last Name:</strong> {user?.last_name || "Last Name"}
+          <strong>Last Name:</strong> {user?.last_name || "Enter your name!"}
           </p>
           <p>
             <strong>Username:</strong> {user?.username || "Guest"}
