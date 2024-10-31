@@ -62,6 +62,12 @@ const UserPage = () => {
 
       await axiosInstance.put("/user", updatedInfo); // Send the updated data to the backend
 
+      // Update user info to reflect changes without a page refresh
+      setUserInfo((currentInfo) => ({
+        ...currentInfo,
+        ...updatedInfo,
+      }));
+
       setSuccessMessage("User information updated successfully!");
       setErrorMessage("");
       setFirstName("");
