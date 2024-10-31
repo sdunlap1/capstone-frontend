@@ -22,9 +22,7 @@ const SignupForm = () => {
     if (
       !trimmedUsername ||
       !trimmedEmail ||
-      !trimmedPassword ||
-      !trimmedFirstName ||
-      !trimmedLastName
+      !trimmedPassword
     ) {
       alert("Please fill out all fields.");
       return;
@@ -91,7 +89,6 @@ const SignupForm = () => {
               type="text"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              required
             />
           </div>
           <div>
@@ -100,7 +97,6 @@ const SignupForm = () => {
               type="text"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              required
             />
           </div>
           <div>
