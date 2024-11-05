@@ -41,7 +41,7 @@ const UserPage = () => {
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
 
-    // Check if both email and password fields are empty
+    // Check if all fields are empty
     if (
       !trimmedFirstName &&
       !trimmedLastName &&
