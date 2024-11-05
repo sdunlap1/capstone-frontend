@@ -236,7 +236,9 @@ const Dashboard = () => {
               ))}
             </>
           )}
+          </div>
 
+          <div className="right-column">
           <h3>Completed Tasks & Projects</h3>
           {completedTasks.length === 0 && completedProjects.length === 0 ? (
             <p>No completed tasks or projects.</p>
