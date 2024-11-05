@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import useAuth from "../hooks/useAuth";
 import axiosInstance from "../api/axiosInstance";
+import EditUserModal from "../components/EditUserModal";
 import "../styles/App.css";
 
 const defaultZipCode = "67050";
 
 const Dashboard = () => {
-  const { token } = useAuth();
-  const { user, loading } = useAuth(); // Fetch user data from your custom hook
+  const { token, user, updateUser, loading } = useAuth(); // Fetch user data from your custom hook
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [outstandingTasks, setOutstandingTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
   const [outstandingProjects, setOutstandingProjects] = useState([]);
@@ -124,7 +124,7 @@ const Dashboard = () => {
       setWeatherData(response.data);
     } catch (error) {
       console.error("Error fetching weather data:", error);
-        await fetchWeather(defaultZipCode); // Fallback to default only if not already using it
+      await fetchWeather(defaultZipCode); // Fallback to default only if not already using it
     }
   };
   // Submit the form to update the zip code
@@ -153,6 +153,10 @@ const Dashboard = () => {
     return <div>No user found.</div>;
   }
 
+  const handleUserUpdate = (updatedInfo) => {
+    updateUser(updatedInfo); // Update user in useAuth
+  };
+
   return (
     <div className="dashboard-wrapper">
       {/* Add this wrapper for centering */}
@@ -160,20 +164,29 @@ const Dashboard = () => {
         {/* Your user info, tasks/projects, and weather sections */}
         <div className="left-column">
           <div className="current-user">
-          <h3>User Info</h3>
-          <p>
-            <strong>First Name:</strong> {user?.first_name || "Don't be shy,"}
-          </p>
-          <p>
-          <strong>Last Name:</strong> {user?.last_name || "Enter your name!"}
-          </p>
-          <p>
-            <strong>Username:</strong> {user?.username || "Guest"}
-          </p>
-          <p>
-            <strong>Email:</strong> {user?.email || "Nothing to see"}
-          </p>
-          <Link to="/user">Edit Info</Link>
+            <h3>User Info</h3>
+            <p>
+              <strong>First Name:</strong>{" "}
+              {user?.first_name || "Don't be shy,"}
+            </p>
+            <p>
+              <strong>Last Name:</strong>{" "}
+              {user?.last_name || "Enter your name!"}
+            </p>
+            <p>
+              <strong>Username:</strong> {user?.username || "Guest"}
+            </p>
+            <p>
+              <strong>Email:</strong> {user?.email || "Nothing to see"}
+            </p>
+            <button className="edit-user" onClick={() => setIsEditModalOpen(true)}>Edit Info</button>
+
+            <EditUserModal
+              isOpen={isEditModalOpen}
+              user={user}
+              onClose={() => setIsEditModalOpen(false)}
+              onUserUpdated={handleUserUpdate}
+            />
           </div>
           {weatherData ? (
             <div className="weather-widget">
