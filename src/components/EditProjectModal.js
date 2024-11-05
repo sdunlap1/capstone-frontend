@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axiosInstance from "../api/axiosInstance";
 import useAuth from "../hooks/useAuth";
+import { useClickOutSide } from "../hooks/useClickOutSide";
 
 const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
   const { token } = useAuth();
@@ -15,8 +16,11 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
   const [endDateError, setEndDateError] = useState(false);
   const [alertShown, setAlertShown] = useState(false); // This flag ensures the alert only shows once
   const [completed, setCompleted] = useState(false);
-
+  const [isSaving, setIsSaving] = useState(false);
+  
   const modalRef = useRef(null);
+
+  useClickOutSide(modalRef, isOpen, onClose);
   
   useEffect(() => {
     if (isOpen && event?.type === "project") {
@@ -46,7 +50,6 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
     }
   }, [isOpen, event]);
 
-
   const handleClose = () => {
     // Clear error messages
     setNameError(false);
@@ -54,23 +57,6 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
     setEndDateError(false);
     onClose();
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      // Check if the click was outside the modal content
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        handleClose(); // Trigger the same logic as Cancel
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen, handleClose]);
 
   const handleSave = async () => {
     if (!event?.project_id) {
@@ -186,7 +172,7 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-backdrop" onClick={handleClose}>
+    <div className="modal-backdrop">
     <div className="modal">
       <div className="modal-content" ref={modalRef} onClick={(e) =>
         e.stopPropagation()
@@ -232,7 +218,7 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
           />
           Mark as Completed
         </label>
-        <button onClick={handleSave}>Save</button>
+        <button onClick={handleSave} disabled={isSaving}>Save</button>
         <button className="delete-button" onClick={handleDelete}>
           Delete
         </button>

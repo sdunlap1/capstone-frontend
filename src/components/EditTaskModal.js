@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axiosInstance from "../api/axiosInstance";
 import useAuth from "../hooks/useAuth";
+import { useClickOutSide } from "../hooks/useClickOutSide";
 
 const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
   const { token } = useAuth();
@@ -18,6 +19,8 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
   const [savedMessage, setSavedMessage] = useState(false);
 
   const modalRef = useRef(null); // Track the modal window State
+  
+  useClickOutSide(modalRef, isOpen, onClose);
 
   // Populate fields when modal opens
   useEffect(() => {
@@ -39,27 +42,18 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
     }
   }, [isOpen, event]);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      // Check if the click was outside the modal content
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        handleClose(); // Trigger the same logic as Cancel
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
+  const handleClose = () => {
+    // Clear error messages
+    setTitleError(false);
+    setDueDateError(false);
+    setDueTimeError(false);
+    onClose();
+  };
 
   const handleSave = async () => {
     if (isSaving) return;
 
-    if (!event?.id) {
+    if (!event?.task_id) {
       alert("Task ID is missing. Cannot save changes.");
       return;
     }
@@ -124,7 +118,7 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
     try {
       setIsSaving(true);
 
-      await axiosInstance.put(`/tasks/${event.id}`, updatedFields, {
+      await axiosInstance.put(`/tasks/${event.task_id}`, updatedFields, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -168,18 +162,10 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
     }
   };
 
-  const handleClose = () => {
-    // Clear error messages
-    setTitleError(false);
-    setDueDateError(false);
-    setDueTimeError(false);
-    onClose();
-  };
-
   if (!isOpen) return null;
 
   return (
-    <div className="modal-backdrop" onClick={handleClose}>
+    <div className="modal-backdrop">
       <div className="modal">
         <div
           className="modal-content"
