@@ -52,6 +52,12 @@
 .modal-content button:hover {
   background-color: #45a049;
 }
+.saved-message {
+  color: green; /* Ensure visibility */
+  display: block; /* Make sure it's visible */
+  margin-top: 10px; /* Adjust if needed */
+  text-align: center; /* Center it in the modal */
+}
 
 .delete-button {
   background-color: #d9534f;
