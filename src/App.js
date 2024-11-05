@@ -21,7 +21,6 @@ const HomePage = () => (
 
 const App = () => {
   const { token } = useAuth();  // Use the auth hook to check if user is logged in
-
   useEffect(() => {
     checkTokenExpiration();
   }, []);

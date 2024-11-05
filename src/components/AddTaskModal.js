@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axiosInstance from "../api/axiosInstance";
 import useAuth from "../hooks/useAuth";
+import { useClickOutSide } from "../hooks/useClickOutSide";
 
 const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
   const { token } = useAuth();
@@ -17,24 +18,7 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
   
   const modalRef = useRef(null); // Used to track the modal window state.
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      // Check if the click was outside the modal content
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        handleClose(); // Trigger the same logic as Cancel
-      }
-    };
-
-    // Add event listener to the document
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    // Cleanup the event listener when the modal is closed
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
+  useClickOutSide(modalRef, isOpen, onClose);
 
   const handleSave = async () => {
     if (isSaving) return;
@@ -128,7 +112,10 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
   return (
     <div className="modal-backdrop">
     <div className="modal">
-      <div className="modal-content" ref={modalRef}>
+      <div className="modal-content" 
+      ref={modalRef}
+      onClick={(e) => e.stopPropagation()}
+      >
         <h2>Add New Task</h2>
         {/* Saved Message */}
         {savedMessage && (
