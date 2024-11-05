@@ -24,7 +24,7 @@ const SignupForm = () => {
       !trimmedEmail ||
       !trimmedPassword
     ) {
-      alert("Please fill out all fields.");
+      alert("Please fill out all required fields.");
       return;
     }
 
