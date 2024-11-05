@@ -156,7 +156,7 @@ Styling for Dashboard
   margin-top: calc(50vh - 350px);
 }
 
-/* Left Column: User Info */
+/* Left Column: User Info and Weather widget some are combined*/
 .current-user {
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -224,7 +224,7 @@ Styling for Dashboard
   font-size: .9em;
 }
 
-.weather-widget button {
+.weather-widget button, .edit-user {
   padding: 10px 20px;
   background-color: #007bff;
   color: white;
@@ -234,7 +234,7 @@ Styling for Dashboard
   font-size: .9em;
 }
 
-.weather-widget button:hover {
+.weather-widget button:hover, .edit-user:hover {
   background-color: #0056b3;
 }
 
@@ -324,9 +324,9 @@ input {
   cursor: pointer;
 }
 
-button:hover {
+/* button:hover {
   background-color: #0056b3;
-}
+} */
 
 /* Error message styling */
 .error {
