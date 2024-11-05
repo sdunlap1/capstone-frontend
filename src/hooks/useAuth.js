@@ -9,6 +9,10 @@ const useAuth = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+  // Function to update user globally
+  const updateUser = (updatedInfo) => {
+    setUser((prevUser) => ({ ...prevUser, ...updatedInfo }));
+  };
 
   useEffect(() => {
     const expiration = checkTokenExpiration();
@@ -64,7 +68,7 @@ const useAuth = () => {
     window.location.href = "/"; // Instead of using navigate, this forces a clean reload
   };
 
-  return { token, user, loading, logout };
+  return { token, user, loading, logout, updateUser };
 };
 
 export default useAuth;
