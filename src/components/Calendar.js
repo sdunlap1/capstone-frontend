@@ -422,7 +422,7 @@ const Calendar = () => {
           left: "", // All buttons on the left
           center: "title", // The title (month, day, year) centered
           right:
-            "prev,next today,dayGridMonth,timeGridWeek,timeGridDay,timeGridFourDay, addTaskButton,addProjectButton", // View switchers on the right
+            "prev,next today,dayGridMonth,timeGridWeek,timeGridDay,timeGridFourDay addTaskButton,addProjectButton", // View switchers on the right
         }}
         customButtons={{
           addTaskButton: {
