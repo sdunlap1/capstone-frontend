@@ -313,8 +313,7 @@ const Calendar = () => {
     <strong>${title}</strong><br>
     Description: ${extendedProps.description || "No description"}<br>
     Start Date: ${startDate}<br>
-    ${endDate ? `End Date: ${endDate}` : ""}
-  `;
+    ${endDate ? `End Date: ${endDate}` : ""}`;
 
     const isTouchDevice = () =>
       "ontouchstart" in window || navigator.maxTouchPoints > 0;
@@ -359,6 +358,63 @@ const Calendar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [searchRef]);
+
+  // Adding useEffect for clicking on day/date header to take you to day view.
+  useEffect(() => {
+    const handleGlobalClick = (event) => {
+      const target = event.target;
+
+      // Ensure target is a valid DOM element
+      if (!(target instanceof Element)) {
+        console.log("Invalid target:", target);
+        return; // Exit if target is not an element
+      }
+
+      const calendarApi = calendarRef.current
+        ? calendarRef.current.getApi()
+        : null;
+
+      // Check if the click is on a day header in week/4-day views
+      const isWeekView = ["timeGridWeek", "timeGridFourDay"].includes(
+        calendarApi?.view.type
+      );
+      const isDayHeaderClicked = target.closest(".fc-col-header-cell-cushion");
+
+      // Only change view if in week/4-day view and clicking on day header
+      if (isWeekView && isDayHeaderClicked) {
+        const dayString = isDayHeaderClicked
+          .closest("th")
+          .getAttribute("data-date"); // Get the date
+        console.log("Day header clicked, navigating to:", dayString);
+        calendarApi.changeView("timeGridDay", dayString);
+      }
+
+      // Additional click handling based on `target.closest`
+      const eventTarget = event.target.closest(
+        ".fc-event, .fc-event-main, .fc-timegrid-slot"
+      );
+
+      if (eventTarget) {
+        if (eventTarget.classList.contains("fc-event")) {
+          console.log("Event clicked:", eventTarget);
+          // Custom logic for event clicks can go here
+        } else if (eventTarget.classList.contains("fc-timegrid-slot")) {
+          console.log("Time slot clicked:", eventTarget);
+          // Custom logic for time grid slot clicks can go here
+        }
+      } else {
+        console.log("Non-event area clicked.");
+      }
+    };
+
+    // Attach event listener for clicks
+    document.addEventListener("mousedown", handleGlobalClick);
+
+    return () => {
+      // Cleanup the event listener on component unmount
+      document.removeEventListener("mousedown", handleGlobalClick);
+    };
+  }, []);
 
   return (
     <div>
@@ -461,13 +517,38 @@ const Calendar = () => {
         datesSet={({ view }) => handleViewChange(view.type)} // Track view changes
         dateClick={(info) => {
           const calendarApi = calendarRef.current.getApi();
-          const selectedDate = info.dateStr; // Get the clicked date in string format
+          const selectedDate = info.dateStr;
+          const targetElement = info.jsEvent.target;
 
-          // Always switch to the day view when clicking on a date
+          // Check if we're in month, week, or 4-day view
+          const isMonthView = calendarApi.view.type === "dayGridMonth";
+          const isWeekView = ["timeGridWeek", "timeGridFourDay"].includes(
+            calendarApi.view.type
+          );
+
+          // Month view: Only trigger if the user clicks on the day number
+          const isDayNumberClicked = targetElement.classList.contains(
+            "fc-daygrid-day-number"
+          );
+
+          // Week and 4-day views: Only trigger if the user clicks on the day header
+          const isDayHeaderClicked = targetElement.closest(
+            ".fc-col-header-cell-cushion"
+          );
+
+          // Log for debugging
+          console.log("Current view type:", calendarApi.view.type);
+          console.log("Clicked element:", targetElement);
+          console.log("isDayNumberClicked (Month view):", isDayNumberClicked);
+          console.log(
+            "isDayHeaderClicked (Week/4-Day view):",
+            isDayHeaderClicked
+          );
+
+          // Navigate to day view based on the specific conditions for each view
           if (
-            ["dayGridMonth", "timeGridWeek", "timeGridFourDay"].includes(
-              calendarApi.view.type
-            )
+            (isMonthView && isDayNumberClicked) ||
+            (isWeekView && isDayHeaderClicked)
           ) {
             calendarApi.changeView("timeGridDay", selectedDate);
           }
