@@ -150,7 +150,7 @@ Styling the Calendar search bar
 }
 
 /* ################################
-end styling the Calendar search bar 
+End styling the Calendar search bar 
 ################################# */
 
 /* overriding FC styling */
@@ -206,3 +206,31 @@ handled in fetchTasks in Calendar.js
 }
 
 
+/* ##########################################
+Create the cursor when clicking into day view
+########################################### */
+
+/* Month view: cursor pointer on day numbers */
+.fc-dayGridMonth-view .fc-daygrid-day-number {
+  cursor: pointer;
+}
+
+/* Week view: cursor pointer on day headers */
+.fc-timeGridWeek-view .fc-col-header-cell-cushion {
+  cursor: pointer;
+}
+
+/* 4-Day view: cursor pointer on day headers */
+.fc-timeGridFourDay-view .fc-col-header-cell-cushion {
+  cursor: pointer;
+}
+
+/* Ensure no pointer cursor in day view */
+.fc-timeGridDay-view .fc-col-header-cell-cushion {
+  cursor: default;
+}
+
+
+/* ###############################
+       End curson styling
+############################### */
