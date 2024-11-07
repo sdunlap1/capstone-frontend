@@ -56,11 +56,6 @@ const EditUserModal = ({ isOpen, user, onClose, onUserUpdated }) => {
       return;
     }
 
-    let hasError = false;
-    setErrors();
-
-    if (hasError) return;
-
     const updatedInfo = {
       first_name: firstName.trim() || user?.first_name,
       last_name: lastName.trim() || user?.last_name,
@@ -70,9 +65,6 @@ const EditUserModal = ({ isOpen, user, onClose, onUserUpdated }) => {
     console.log("Payload being sent to the server:", updatedInfo);
     try {
       setIsSaving(true);
-      setEmailError("");
-      setPasswordError("");
-      setErrors([]);
 
       await axiosInstance.put("/user", updatedInfo, {
         headers: { Authorization: `Bearer ${token}` },
@@ -96,21 +88,15 @@ const EditUserModal = ({ isOpen, user, onClose, onUserUpdated }) => {
 
         // Handle field-specific validation errors
         if (Array.isArray(errorResponse)) {
-          let fieldErrors = [];
-
           errorResponse.forEach((err) => {
             if (err.param === "email") {
               setEmailError(err.msg); // Set email-specific error
             } else if (err.param === "password") {
               setPasswordError(err.msg); // Set password-specific error
             } else {
-              fieldErrors.push(err.msg);
+              setErrors((prevErrors) => [...prevErrors, err.msg]);
             }
           });
-
-          if (fieldErrors.length > 0) {
-            setErrors(fieldErrors);
-          }
         } else if (error.response.data.message === "Email already in use") {
           setEmailError("The email is already in use.");
         } else {
@@ -163,18 +149,18 @@ const EditUserModal = ({ isOpen, user, onClose, onUserUpdated }) => {
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
-              setEmailError(""); // Clear error on input change
+              setEmailError("");
               setErrors([]);
             }}
           />
-          {/* {passwordError && <p style={{ color: "red" }}>{passwordError}</p>} */}
+          {passwordError && <p style={{ color: "red" }}>{passwordError}</p>}
           <input
             type="password"
             placeholder="New Password (optional)"
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
-              setPasswordError(""); // Clear error on input change
+              setPasswordError("");
               setErrors([]);
             }}
           />
