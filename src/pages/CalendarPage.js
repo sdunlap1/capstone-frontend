@@ -19,7 +19,6 @@ const CalendarPage = () => {
 
   return (
     <div>
-      <h1>Calendar Page</h1>
       <Calendar 
         initialDate={initialDate} 
         onEventClick={(eventDate) => navigate(`/calendar/${eventDate.toISOString().split('T')[0]}`)}
