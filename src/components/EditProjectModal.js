@@ -178,38 +178,41 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
         e.stopPropagation()
       }>
         <h2>Edit Project</h2>
+        {nameError && (
+          <span className="error-text">Project name is required</span>
+        )}
         <input
           type="text"
           placeholder="Project Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          className={`input-field ${nameError ? "input-error" : ""}`}
         />
-        {nameError && (
-          <span className="error-text">Project name is required</span>
-        )}
         <textarea
           placeholder="Project Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
         <label>Start Date</label>
+        {startDateError && (
+          <span className="error-text">Start date is required</span>
+        )}
         <input
           type="date"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
+          className={`input-field ${startDateError ? "input-error" : ""}`}
         />
-        {startDateError && (
-          <span className="error-text">Start date is required</span>
-        )}
         <label>End Date</label>
+        {endDateError && (
+          <span className="error-text">End date is required</span>
+        )}
         <input
           type="date"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
+          className={`input-field ${endDateError ? "input-error" : ""}`}
         />
-        {endDateError && (
-          <span className="error-text">End date is required</span>
-        )}
         <label>
           <input
             type="checkbox"
