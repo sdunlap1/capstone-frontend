@@ -141,14 +141,14 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
   };
 
   const handleDelete = async () => {
-    if (!event?.id) {
+    if (!event?.task_id) {
       console.error("Task ID is missing for deletion:", event);
       alert("Task ID is missing. Cannot delete this task.");
       return;
     }
 
     try {
-      await axiosInstance.delete(`/tasks/${event.id}`, {
+      await axiosInstance.delete(`/tasks/${event.task_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -177,33 +177,36 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
             <div className="saved-message">Task updated successfully!</div>
           )}
           <h2>Edit Task</h2>
+          {titleError && (
+            <span className="error-text">Task title is required</span>
+          )}
           <input
             type="text"
             placeholder="Task Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            className={`input-field ${titleError ? "input-error" : ""}`}
           />
-          {titleError && (
-            <span className="error-text">Task title is required</span>
-          )}
 
           <label>Due Date</label>
+          {dueDateError && (
+            <span className="error-text">Due date is required</span>
+          )}
           <input
             type="date"
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
+            className={`input-field ${dueDateError ? "input-error" : ""}`}
           />
-          {dueDateError && (
-            <span className="error-text">Due date is required</span>
-          )}
 
           <label>Time</label>
+          {dueTimeError && <span className="error-text">Time is required</span>}
           <input
             type="time"
             value={dueTime}
             onChange={(e) => setDueTime(e.target.value)}
+            className={`input-field ${dueTimeError ? "input-error" : ""}`}
           />
-          {dueTimeError && <span className="error-text">Time is required</span>}
 
           <textarea
             placeholder="Task Description"
