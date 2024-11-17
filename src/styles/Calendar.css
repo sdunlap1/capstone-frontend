@@ -1,3 +1,125 @@
+/* =========================
+Start Fullcalendar overrides
+=========================  */
+:root {
+  /* For events and projects */
+  --fc-small-font-size: .9em; 
+  /* For text in buttons */
+  --fc-button-text-color: rgba(25, 25, 112, 1); 
+  /* Today bg color */
+  --fc-today-bg-color: rgba(180, 200, 220, 0.2); 
+  /* Calendar border color */
+  --fc-border-color: rgba(180, 200, 220, 0.5); 
+  /* so far just affects today button */
+  --fc-button-border-color: rgb(66, 113, 203); 
+  /* button bg color */
+  --fc-button-bg-color: rgba(255, 255, 255, 0.1); 
+  /* Button bg color on hover */
+  --fc-button-hover-bg-color: rgba(66, 113, 203, 0.2); 
+  /* Button border color on hover */
+  --fc-button-hover-border-color: rgb(66, 113, 255); 
+  /* Active color for aria pressed */
+  --fc-button-active-bg-color: rgba(66, 113, 203, 0.2); 
+  /* Active border color for aria pressed */
+  --fc-button-active-border-color: rgba(28, 129, 229, 0.5); 
+  /* Event bg color, use !important so all events get styled */
+  --fc-event-bg-color: rgba(66, 113, 203, 0.3); 
+  /* Event border color, use !important so all events get styled */
+  --fc-event-border-color: rgb(66, 113, 255); 
+  /* Text color for events */
+  --fc-event-text-color: rgba(25, 25, 112, 1); 
+  /* Open events */
+  --fc-event-open-bg-color: rgba(28, 129, 229, 0.2);
+  /* Completed events */
+  --fc-event-completed-bg-color: rgba(127, 127, 127, 0.3); 
+  /* Bg color for active buttons */
+  --fc-button-active-bg-color: rgba(66, 113, 203, 0.2); 
+  /* For modal box */
+  --new-event-button: rgba(66, 113, 203, 0.2); 
+  /* For modal box */
+  --new-event-button-hover: rgba(255, 255, 255, 0.1); 
+}
+
+/* style the title above the buttons */
+.fc-toolbar {
+  display: flex;
+  flex-direction: column;
+  /* Stack title and buttons vertically */
+  align-items: center;
+  /* Center all elements */
+  padding-bottom: 10px;
+  /* Adjust space below the toolbar */
+}
+
+/* Center and style the title */
+.fc-toolbar-title {
+  font-size: 24px;
+  padding-bottom: 10px;
+  /* Space between title and buttons */
+  text-align: center;
+  font-weight: bold;
+  color: var(--fc-button-text-color);
+}
+
+/* Adjust the buttons layout */
+.fc-toolbar-chunk {
+  display: flex;
+  justify-content: center;
+}
+
+/* Apply button styles */
+.fc-button-group .fc-button {
+  border-radius: 15px;
+  /* Full rounding for all buttons */
+  margin: 5px 0;
+  /* Add horizontal gap between buttons */
+  padding: 5px 25px;
+  font-size: 1em
+}
+
+/* Optional: Adjust vertical alignment and spacing if necessary */
+.fc-toolbar-chunk {
+  display: flex;
+  gap: 10px;
+  /* Adds spacing between button groups */
+}
+
+/* Add margin to the header cells */
+.fc-col-header-cell .fc-col-header-cell-cushion {
+  margin: 15px 20px;
+  text-align: center;
+}
+
+.fc-col-header-cell .fc-scrollgrid-sync-inner {
+  font-size: 1em;
+  background-color: rgba(28, 129, 229, 0.1);
+  color: rgba(25, 25, 112);
+  border-left: 2px solid rgba(25, 25, 112, 0.1); /* think about changing this */
+}
+
+/* Style for aria-pressed state */
+.fc-button-active {
+  background-color: rgba(66, 113, 255, 0.3) !important;
+}
+
+/*  Remove the syle ring when clicking on a button  */
+.fc-button-group .fc-button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Hover effect for buttons */
+.fc-button-primary {
+  transition: background-color 0.5s ease;
+}
+
+/* =======================
+End Fullcalendar overrides
+======================== */
+
+/* ================== 
+  Styling the modals
+ ================== */
 /* Add some padding to the main content to avoid being hidden by the navbar */
 .modal-backdrop {
   position: fixed;
@@ -5,17 +127,20 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  background: rgba(0, 0, 0, 0.5);
+  /* Semi-transparent background */
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999; /* Ensure it sits behind the modal but above other content */
+  z-index: 999;
+  /* Ensure it sits behind the modal but above other content */
 }
 
 .modal {
   background: white;
   border: 1px solid #ccc;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 8px rgba(0, 0, 255, 0.3);
+  border-radius: 10px;
   z-index: 1000;
 }
 
@@ -24,71 +149,55 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
-  padding: 20px; 
-}
-
-.delete-button {
-  background-color: #d9534f;
-  color: white;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-}
-
-.delete-button:hover {
-  background-color: #c9302c !important;
+  padding: 20px;
+  color: var(--fc-button-text-color);
 }
 
 .modal-content button {
-  background-color: #4CAF50; /* Green for Save */
-  color: white;
-  border: none;
+  background-color: var(--new-event-button);
+  border: 1px solid var(--fc-button-border-color);
+  color: var(--fc-button-text-color);
   padding: 10px;
   cursor: pointer;
   border-radius: 4px;
   margin-bottom: 5px;
+  transition: background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .modal-content button:hover {
-  background-color: #45a049;
+  background-color: var(--new-event-button-hover);
 }
-.saved-message {
-  color: green; /* Ensure visibility */
-  display: block; /* Make sure it's visible */
-  margin-top: 10px; /* Adjust if needed */
-  text-align: center; /* Center it in the modal */
-}
-
-.delete-button {
-  background-color: #d9534f;
-  color: white;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  border-radius: 4px;
-  margin-bottom: 5px;
+.modal-content .delete-button:hover {
+  border-color: #c9302c;
+  color: #c9302c;
+  font-weight: bold;
 }
 
-.delete-button:hover {
-  background-color: #c9302c;
+.modal-content input, .modal-content textarea {
+  border-color: rgba(66, 113, 203, 0.5);
+  transition: border-color 0.4s ease;
+}
+.modal-content input:focus, .modal-content textarea:focus {
+  border-color: var(--fc-button-border-color);
+  outline: none;
+}
+textarea {
+  resize: none;
+  color: var(--fc-button-text-color);
+}
+input {
+  color: var(--fc-button-text-color);
 }
 
-.cancel-button {
-  background-color: #ddd;
-  color: black;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.cancel-button:hover {
-  background-color: #ccc;
+input::placeholder,
+textarea::placeholder {
+  color: var(--fc-button-text-color);
 }
 
 /* styling for input field errors */
 .input-error {
-  border-color: red;
+  border: 1px solid red;
 }
 
 .error-text {
@@ -96,6 +205,7 @@
   font-size: 0.9rem;
   margin-top: 0.2rem;
 }
+
 /* ---------------------------
 Styling the Calendar search bar
 ---------------------------- */
@@ -106,45 +216,63 @@ Styling the Calendar search bar
   width: 300px;
   display: flex;
   justify-content: center;
-  position: relative; /* Ensure the results box stays within the container */
+  position: relative;
+  /* Ensure the results box stays within the container */
 }
 
 .search-container input {
   padding: 8px;
   font-size: 16px;
-  border: 1px solid #ccc;
+  border: 1px solid rgba(66, 113, 203, 0.5);
   border-radius: 5px;
   width: 100%;
+  color: rgb(33, 57, 102);
+  transition: border-color 0.4s ease;
+}
+
+.search-container input:focus {
+  border-color: var(--fc-button-border-color);
+  /* Darker shade of rgb(66, 113, 203) */
+  outline: none;
+  /* Remove default outline */
 }
 
 .search-results {
-  position: absolute; /* Position the results below the input field */
-  top: 100%; /* Position just below the input */
+  position: absolute;
+  /* Position the results below the input field */
+  top: 100%;
+  /* Position just below the input */
   left: 0;
-  width: calc(100%); /* Make the width match the input field */
-  max-height: 300px; /* Limit max height */
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
+  width: calc(100%);
+  /* Make the width match the input field */
+  max-height: 300px;
+  /* Limit max height */
+  background-color: rgb(237, 246, 255);
+  border: 1px solid var(--fc-button-border-color);
   border-radius: 5px;
-  overflow-y: auto; /* Enable scroll if results are too many */
-  z-index: 101; /* Ensure it stays above other content */
+  overflow-y: auto;
+  /* Enable scroll if results are too many */
+  z-index: 101;
+  /* Ensure it stays above other content */
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .search-result-item {
   padding: 10px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid rgba(66, 113, 203, 0.3);
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
 }
 
 .search-result-item:last-child {
-  border-bottom: none; /* Remove the bottom border for the last item */
+  border-bottom: none;
+  /* Remove the bottom border for the last item */
 }
 
 .search-result-item:hover {
-  background-color: #e0e0e0;
+  background-color: var(--fc-button-hover-bg-color);
 }
+
 .search-results:empty {
   display: none;
 }
@@ -153,58 +281,30 @@ Styling the Calendar search bar
 End styling the Calendar search bar 
 ################################# */
 
-/* overriding FC styling */
-.fc-addTaskButton-button, .fc-addProjectButton-button {
-  background-color: blue !important;
-  color: white !important;
+
+/* completed tasks and projects */
+.open-task {
+  background-color: var(--fc-event-open-bg-color);
 }
 
-.fc-addTaskButton-button:hover, .fc-addProjectButton-button:hover {
-  background-color: darkblue !important;
-}
-.fc-today-button {
-  background-color: red !important;
+.completed-task {
+  background-color: var(--fc-event-completed-bg-color);
 }
 
-/* style the title and buttons */
-.fc-toolbar {
-  display: flex;
-  flex-direction: column; /* Stack title and buttons vertically */
-  align-items: center; /* Center all elements */
-  margin-bottom: 20px; /* Adjust space below the toolbar */
+.completed-project {
+  background-color: var(--fc-event-completed-bg-color);
+  font-size: 1em;
+  border: 1px solid rgba(28, 129, 229, 0.5);
 }
 
-/* Center and style the title */
-.fc-toolbar-title {
-  font-size: 24px;
-  margin-bottom: 10px; /* Space between title and buttons */
-  text-align: center;
-  font-weight: bold;
+.open-project {
+  background-color: var(--fc-event-open-bg-color);
 }
 
-/* Adjust the buttons layout */
-.fc-toolbar-chunk {
-  display: flex;
-  justify-content: center;
+/* Style the button group */
+.fc-button {
+  border-radius: 10px;
 }
-
-/* ------------------------------------------------
-Use this styling for month view all other views are 
-handled in fetchTasks in Calendar.js 
-------------------------------------------------- */
-
-/* non completed tasks */
-.task-event {
-  background-color: rgba(0, 0, 255, 0.5) !important; 
-  border-color: rgba(0, 0, 255, 1);
-  color: #FFF;
-}
-/* completed tasks */
-.task-event.completed {
-  background-color: grey !important; 
-  border-color: darkgrey; 
-}
-
 
 /* ##########################################
 Create the cursor when clicking into day view
@@ -230,7 +330,25 @@ Create the cursor when clicking into day view
   cursor: default;
 }
 
-
 /* ###############################
        End curson styling
 ############################### */
+
+/* ======================
+     My Tippy Themes not working. Will come back to it late
+======================= */
+.tippy-box[data-theme~="mylight"] {
+  background-color: rgba(255, 255, 255, 0.5);
+  color: green;
+  border: 1px solid var(--fc-event-border-color);
+  box-shadow: 0 0 20px 4px rgba(154, 161, 177, .15), 0 4px 80px -8px rgba(36, 40, 47, .25), 0 4px 4px -2px rgba(91, 94, 105, .15);
+}
+
+.tippy-box[data-theme~=mylight][data-placement^=top]>.tippy-arrow:before {
+  border-left-color: red; 
+  background: red;
+}
+
+.tippy-box[data-theme~=mylight]>.tippy-backdrop {
+  background-color: #fff
+}
