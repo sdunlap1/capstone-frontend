@@ -6,6 +6,11 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import tippy from "tippy.js";
+import 'tippy.js/dist/backdrop.css';
+import 'tippy.js/animations/shift-away.css';
+import 'tippy.js/themes/light.css';
+import 'tippy.js/themes/light-border.css';
+import 'tippy.js/dist/border.css';
 import "tippy.js/dist/tippy.css";
 import axiosInstance from "../api/axiosInstance";
 import useAuth from "../hooks/useAuth";
@@ -57,10 +62,7 @@ const Calendar = () => {
           completed: task.completed,
           type: "task",
           allDay: false,
-          borderColor: "rgba(0, 0, 255, 1)",
-          backgroundColor: task.completed ? "grey" : "rgba(0, 0, 255, 0.5)", // Grey out completed tasks
-          borderColor: task.completed ? "darkgrey" : "rgba(0, 0, 255, 1)",
-          classNames: ["task-event", task.completed ? "completed" : ""],
+          classNames: ["task-event", task.completed ? "completed-task" : "open-task"],
         }));
         return taskEvents;
       } else {
@@ -97,8 +99,7 @@ const Calendar = () => {
           completed: project.completed,
           type: "project",
           project_id: project.project_id,
-          backgroundColor: project.completed ? "grey" : "#4CAF50",
-          borderColor: project.completed ? "darkgrey" : "darkblue",
+          classNames: ["project-event", project.completed ? "completed-project" : "open-project"],
         }));
         return projectEvents;
       } else {
@@ -196,7 +197,6 @@ const Calendar = () => {
     }
   };
   const handleEventResize = async (resizeInfo) => {
-    console.log("Event resized:", resizeInfo); // Add this log
     const { event } = resizeInfo;
 
     const updatedStart = event.start;
@@ -309,7 +309,7 @@ const Calendar = () => {
     const endDate = end ? new Date(end).toLocaleDateString("en-US") : null;
 
     // Build the content for the tooltip
-    const content = `
+    const eventContent = `
     <strong>${title}</strong><br>
     Description: ${extendedProps.description || "No description"}<br>
     Start Date: ${startDate}<br>
@@ -319,15 +319,17 @@ const Calendar = () => {
       "ontouchstart" in window || navigator.maxTouchPoints > 0;
     // Create the tooltip
     tippy(info.el, {
-      content: content,
+      content: eventContent,
       allowHTML: true,
       interactive: false, // Ensures tooltips won't "stick"
       hideOnClick: true, // Close tip when clicking outside
       trigger: isTouchDevice() ? "click touchstart" : "mouseenter", // Trigger on touch and click for mobile
       placement: "top",
+      animation: "shift-away",
       theme: "light", // Optional: custom themes from tippy.js
+      arrow: true,
       appendTo: document.body,
-      duration: [300, 100], // Sets speed of opening and closing tip
+      duration: [900, 300], // Sets speed of opening and closing tip
     });
   };
 
@@ -497,10 +499,61 @@ const Calendar = () => {
           },
         }}
         views={{
+          timeGridWeek: {
+            dayHeaderContent: (args) => {
+              const date = args.date.toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+              });
+              const day = args.date.toLocaleDateString("en-US", {
+                weekday: "short",
+              });
+              return (
+                <div>
+                  <div>{day}</div>
+                  <div>{date}</div>
+                </div>
+              );
+            },
+          },
           timeGridFourDay: {
             type: "timeGrid",
             duration: { days: 4 },
             buttonText: "4 day",
+            dayHeaderContent: (args) => {
+              const date = args.date.toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+              });
+              const day = args.date.toLocaleDateString("en-US", {
+                weekday: "short",
+              });
+              return (
+                <div>
+                  <div>{day}</div>
+                  <div>{date}</div>
+                  </div>
+              );
+            },
+          },
+          timeGridDay: {
+            type: "timeGrid",
+            buttonText: "Day",
+            dayHeaderContent: (args) => {
+              const date = args.date.toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+              });
+              const day = args.date.toLocaleDateString("en-US", {
+                weekday: "long", // Use full weekday name for the day view
+              });
+              return (
+                <div>
+                  <div>{day}</div>
+                  <div>{date}</div>
+                </div>
+              );
+            },
           },
         }}
         events={events}
