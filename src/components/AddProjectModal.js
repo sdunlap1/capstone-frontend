@@ -126,40 +126,43 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
             <div className="saved-message">Project saved successfully!</div>
           )}
           <h2>Add New Project</h2>
+          {nameError && (
+            <span className="error-text">Project name is required</span>
+          )}
           <input
             type="text"
             placeholder="Project Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            className={`input-field ${nameError ? "input-error" : ""}`}
           />
-          {nameError && (
-            <span className="error-text">Project name is required</span>
-          )}
           <textarea
             placeholder="Project Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
           <label>Start Date</label>
+          {startDateError && (
+            <span className="error-text">Start date is required</span>
+          )}
           <input
             type="date"
             placeholder="Start Date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
+            className={`input-field ${startDateError ? "input-error" : ""}`}
           />
-          {startDateError && (
-            <span className="error-text">Start date is required</span>
-          )}
           <label>End Date</label>
+          {dueDateError && (
+            <span className="error-text">End date is required</span>
+          )}
           <input
             type="date"
             placeholder="Due Date"
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
+            className={`input-field ${dueDateError ? "input-error" : ""}`}
           />
-          {dueDateError && (
-            <span className="error-text">End date is required</span>
-          )}
           <button onClick={handleSave} disabled={isSaving}>
             Save
           </button>
