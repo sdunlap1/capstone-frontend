@@ -13,6 +13,7 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
   const [description, setDescription] = useState("");
   const [titleError, setTitleError] = useState(false);
   const [dueDateError, setDueDateError] = useState(false);
+  const [dueTimeError, setDueTimeError] = useState(false);
   const [savedMessage, setSavedMessage] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   
@@ -27,6 +28,7 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
     // Clear previous error messages
     setTitleError(false);
     setDueDateError(false);
+    setDueTimeError(false);
 
     // Check if title is empty
     if (!title.trim()) {
@@ -39,6 +41,13 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
       setDueDateError(true);
       hasError = true;
     }
+
+    // Check if time is empty (time is always required)
+    if (!dueTime) {
+      setDueTimeError(true);
+      hasError = true;
+    }
+
     if (hasError) return;
 
     // Get today's date in Los Angeles timezone, formatted as YYYY-MM-DD
@@ -124,33 +133,36 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
           </div>
         )}
         <label>Task Title</label>
+        {titleError && (
+          <span className="error-text">Task title is required</span>
+        )}
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className={titleError ? "input-error" : ""}
+          className={`input-field ${titleError ? "input-error" : ""}`}
         />
-        {titleError && (
-          <span className="error-text">Task title is required</span>
-        )}
         <label>Due Date</label>
+        {dueDateError && (
+          <span className="error-text">Due date is required</span>
+        )}
         <input
           type="date"
           value={dueDate}
           onChange={(e) => setDueDate(e.target.value)}
-          className={dueDateError ? "input-error" : ""}
+          className={`input-field ${dueDateError ? "input-error" : ""}`}
         />
-        {dueDateError && (
-          <span className="error-text">Due date is required</span>
-        )}
         <label>Time</label>
+        {dueTimeError && <span className="error-text">Time is required</span>}
         <input
           type="time"
           value={dueTime} // Separate time input
           onChange={(e) => setDueTime(e.target.value)}
+          className={`input-field ${dueTimeError ? "input-error" : ""}`}
         />
         <textarea
           placeholder="Task Description"
+          className="input-field"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
