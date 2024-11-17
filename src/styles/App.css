@@ -116,8 +116,8 @@ Styling for Dashboard
 
 /* Completed task/project */
 .completed {
-  background-color: grey; /* Or any color you prefer */
-  color: white;
+  background-color: var(--fc-event-completed-bg-color);  /* Or any color you prefer */
+  color: var(--fc-button-text-color);
   text-decoration: line-through; /* Optional to strike through completed items */
   padding: 8px;
   border-radius: 5px;
@@ -126,8 +126,8 @@ Styling for Dashboard
 
 /* Outstanding task/project */
 .outstanding {
-  background-color: rgba(0, 0, 255, 0.5); /* Or any color you prefer */
-  color: black;
+  background-color: var(--fc-event-bg-color);
+  color: var(--fc-button-text-color);
   padding: 8px;
   border-radius: 5px;
   margin-bottom: 10px;
@@ -284,9 +284,9 @@ Styling for Dashboard
   border-radius: 5px;
 }
 
-/* ######################
-End Styling for Dashboard
-###################### */
+/* ##############################
+    End Styling for Dashboard
+############################### */
 
 /* ###############################
 styling for login and signup pages
