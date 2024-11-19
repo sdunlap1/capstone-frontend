@@ -49,8 +49,8 @@ const App = () => {
         <Route path="/user" element={<ProtectedRoute><UserPage /></ProtectedRoute>} />
 
         {/* Unprotected routes */}
-        <Route path="/login" element={token ? <Navigate to="/dashboard" replace /> : <div className="main-content"><LoginForm /></div>} />
-        <Route path="/signup" element={token ? <Navigate to="/dashboard" replace /> : <div className="main-content"><SignupForm /></div>} />
+        <Route path="/login" element={token ? <Navigate to="/dashboard" replace /> : <div className="login"><LoginForm /></div>} />
+        <Route path="/signup" element={token ? <Navigate to="/dashboard" replace /> : <div className="signup"><SignupForm /></div>} />
       </Routes>
     </div>
   );
