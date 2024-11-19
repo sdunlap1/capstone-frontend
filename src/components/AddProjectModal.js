@@ -136,11 +136,6 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
             onChange={(e) => setName(e.target.value)}
             className={`input-field ${nameError ? "input-error" : ""}`}
           />
-          <textarea
-            placeholder="Project Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
           <label>Start Date</label>
           {startDateError && (
             <span className="error-text">Start date is required</span>
@@ -162,6 +157,12 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
             className={`input-field ${dueDateError ? "input-error" : ""}`}
+          />
+          <label>Description</label>
+          <textarea
+            placeholder="Project Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           />
           <button onClick={handleSave} disabled={isSaving}>
             Save
