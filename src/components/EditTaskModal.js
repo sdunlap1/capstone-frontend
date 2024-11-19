@@ -172,11 +172,11 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
           ref={modalRef}
           onClick={(e) => e.stopPropagation()}
         >
+          <h2>Edit Task</h2>
           {/* Saved Message */}
           {savedMessage && (
             <div className="saved-message">Task updated successfully!</div>
           )}
-          <h2>Edit Task</h2>
           {titleError && (
             <span className="error-text">Task title is required</span>
           )}
@@ -207,7 +207,7 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
             onChange={(e) => setDueTime(e.target.value)}
             className={`input-field ${dueTimeError ? "input-error" : ""}`}
           />
-
+          <label>Description</label>
           <textarea
             placeholder="Task Description"
             value={description}
@@ -219,7 +219,6 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
               checked={completed} // Checkbox to mark as complete
               onChange={(e) => {
                 setCompleted(e.target.checked);
-                console.log("Completed state changed to:", e.target.checked);
               }}
             />
             Mark as Completed
