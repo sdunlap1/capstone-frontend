@@ -113,6 +113,7 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
     // Clear any error messages
     setTitleError(false);
     setDueDateError(false);
+    setDueTimeError(false);
     onClose(); // Close the modal
   };
 
@@ -140,7 +141,7 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className={`input-field ${titleError ? "input-error" : ""}`}
+          className={titleError ? "input-error" : undefined}
         />
         <label>Due Date</label>
         {dueDateError && (
@@ -150,7 +151,7 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
           type="date"
           value={dueDate}
           onChange={(e) => setDueDate(e.target.value)}
-          className={`input-field ${dueDateError ? "input-error" : ""}`}
+          className={dueDateError ? "input-error" : undefined}
         />
         <label>Time</label>
         {dueTimeError && <span className="error-text">Time is required</span>}
@@ -158,11 +159,10 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
           type="time"
           value={dueTime} // Separate time input
           onChange={(e) => setDueTime(e.target.value)}
-          className={`input-field ${dueTimeError ? "input-error" : ""}`}
+          className={dueTimeError ? "input-error" : undefined}
         />
         <textarea
           placeholder="Task Description"
-          className="input-field"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
