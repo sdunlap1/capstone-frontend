@@ -3,6 +3,7 @@ import axios from "axios";
 import useAuth from "../hooks/useAuth";
 import axiosInstance from "../api/axiosInstance";
 import EditUserModal from "../components/EditUserModal";
+import "../styles/Calendar.css";
 import "../styles/App.css";
 
 const defaultZipCode = "67050";
@@ -179,7 +180,7 @@ const Dashboard = () => {
             <p>
               <strong>Email:</strong> {user?.email || "Nothing to see"}
             </p>
-            <button className="edit-user" onClick={() => setIsEditModalOpen(true)}>Edit Info</button>
+            <button onClick={() => setIsEditModalOpen(true)}>Edit Info</button>
 
             <EditUserModal
               isOpen={isEditModalOpen}
