@@ -188,12 +188,7 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
           onChange={(e) => setName(e.target.value)}
           className={`input-field ${nameError ? "input-error" : ""}`}
         />
-        <textarea
-          placeholder="Project Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <label>Start Date</label>
+       <label>Start Date</label>
         {startDateError && (
           <span className="error-text">Start date is required</span>
         )}
@@ -212,6 +207,12 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
           className={`input-field ${endDateError ? "input-error" : ""}`}
+        />
+        <label>Description</label>
+        <textarea
+          placeholder="Project Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
         <label>
           <input
