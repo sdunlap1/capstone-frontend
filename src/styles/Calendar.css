@@ -1,9 +1,19 @@
+/* Calendar.css */
+
+input, textarea, select, button {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  resize: none;
+}
 /* =========================
 Start Fullcalendar overrides
 =========================  */
 :root {
   /* For events and projects */
   --fc-small-font-size: .9em; 
+  /* Default text color */
+  --fc-text-color: rgba(0, 28, 105, 0.993);
   /* For text in buttons */
   --fc-button-text-color: rgba(25, 25, 112, 1); 
   /* Today bg color */
@@ -104,7 +114,6 @@ Start Fullcalendar overrides
 
 /*  Remove the syle ring when clicking on a button  */
 .fc-button-group .fc-button:focus {
-  outline: none !important;
   box-shadow: none !important;
 }
 
@@ -152,6 +161,9 @@ End Fullcalendar overrides
   padding: 20px;
   color: var(--fc-button-text-color);
 }
+.modal-content h2 {
+  margin-bottom: 25px;
+}
 
 .modal-content button {
   background-color: var(--new-event-button);
@@ -165,7 +177,7 @@ End Fullcalendar overrides
     border-color 0.3s ease;
 }
 
-.modal-content button:hover {
+.modal-content button:hover, .modal-content button:focus {
   background-color: var(--new-event-button-hover);
 }
 .modal-content .delete-button:hover {
@@ -173,30 +185,26 @@ End Fullcalendar overrides
   color: #c9302c;
   font-weight: bold;
 }
-
 .modal-content input, .modal-content textarea {
-  border-color: rgba(66, 113, 203, 0.5);
-  transition: border-color 0.4s ease;
+  border: 1px solid rgba(66, 113, 203, 0.5);
+  color: rgb(66, 113, 203);
+  font-size: 1.1em;
+  padding: 5px;
+  transition: border-color 0.5s ease;
 }
 .modal-content input:focus, .modal-content textarea:focus {
-  border-color: var(--fc-button-border-color);
-  outline: none;
+  border: 1px solid var(--fc-button-border-color);
+  color: darkblue;
+  font-size: 1.1em;
 }
-textarea {
-  resize: none;
-  color: var(--fc-button-text-color);
-}
-input {
-  color: var(--fc-button-text-color);
-}
-
-input::placeholder,
-textarea::placeholder {
-  color: var(--fc-button-text-color);
+.modal-contant input::placeholder,
+.modal-content textarea::placeholder {
+  color: var(--fc-text-color);
+  font-size: 1em;
 }
 
 /* styling for input field errors */
-.input-error {
+input.input-error {
   border: 1px solid red;
 }
 
@@ -204,6 +212,10 @@ textarea::placeholder {
   color: red;
   font-size: 0.9rem;
   margin-top: 0.2rem;
+}
+
+.saved-message {
+  color: purple;
 }
 
 /* ---------------------------
@@ -227,14 +239,14 @@ Styling the Calendar search bar
   border-radius: 5px;
   width: 100%;
   color: rgb(33, 57, 102);
-  transition: border-color 0.4s ease;
+  transition: border-color 0.5s ease;
 }
-
 .search-container input:focus {
   border-color: var(--fc-button-border-color);
   /* Darker shade of rgb(66, 113, 203) */
-  outline: none;
-  /* Remove default outline */
+}
+.search-container input::placeholder {
+  color: var(--fc-text-color);
 }
 
 .search-results {
