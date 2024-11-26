@@ -14,9 +14,9 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
   const [nameError, setNameError] = useState(false);
   const [startDateError, setStartDateError] = useState(false);
   const [endDateError, setEndDateError] = useState(false);
-  const [alertShown, setAlertShown] = useState(false); // This flag ensures the alert only shows once
   const [completed, setCompleted] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [savedMessage, setSavedMessage] = useState(false);
   
   const modalRef = useRef(null);
 
@@ -28,7 +28,6 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
       setName(event.title || "");
       setDescription(event.description || "");
       setCompleted(event.completed || false);
-      setAlertShown(false);
 
       // If start date exists, set it
       if (event.start) {
@@ -90,6 +89,7 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
     }
 
     if (hasError) return;
+
     // Convert the start and end dates to Date objects for comparison
     const selectedStartDate = new Date(startDate + "T12:00:00"); // Assuming the user input is in YYYY-MM-DD format
     const selectedEndDate = new Date(endDate + "T12:00:00"); // Assuming the user input is in YYYY-MM-DD format
@@ -114,12 +114,14 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
     // Only show the alert if:
     // 1. The project's original end date was in the future
     // 2. The new selected end date is in the past
-    if (!alertShown && originalEndDate >= today && newEndDate < today) {
+    if (!localStorage.getItem("notifiedPastDate") && selectedEndDate < today) {
       alert("Warning: End date is in the past.");
-      setAlertShown(true); // Mark that the alert has been shown
+      localStorage.setItem("notifiedPastDate", "true");
     }
 
     try {
+      setIsSaving(true);
+
       // Simply use the date as-is without forcing to UTC
       const formattedStartDate = new Date(startDate + "T12:00:00"); // Local time
       const formattedEndDate = new Date(endDate + "T12:00:00"); // Local time
@@ -139,12 +141,19 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
         },
       });
 
-      alert("Project updated successfully!");
       onProjectUpdated(); // Refresh the events after updating
-      onClose(); // Close the modal
+      setSavedMessage(true);
+
+      setTimeout(() => {
+        setSavedMessage(false);
+        setIsSaving(false);
+        handleClose();
+      }, 2000);
     } catch (error) {
       console.error("Error updating project:", error);
       alert("Failed to update the project. Please try again.");
+      setIsSaving(false);
+      return;
     }
   };
 
@@ -178,9 +187,14 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
         e.stopPropagation()
       }>
         <h2>Edit Project</h2>
+        {/* Saved Message */}
+        {savedMessage && (
+            <div className="saved-message">Project updated successfully!</div>
+          )}
         {nameError && (
           <span className="error-text">Project name is required</span>
         )}
+        
         <input
           type="text"
           placeholder="Project Name"
@@ -214,14 +228,12 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <label>
           <input
             type="checkbox"
             checked={completed} // Checkbox to mark as complete
             onChange={(e) => setCompleted(e.target.checked)}
           />
-          Mark as Completed
-        </label>
+          <label>Mark as Completed</label>
         <button onClick={handleSave} disabled={isSaving}>Save</button>
         <button className="delete-button" onClick={handleDelete}>
           Delete
