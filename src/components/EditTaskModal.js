@@ -19,25 +19,41 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
   const [savedMessage, setSavedMessage] = useState(false);
 
   const modalRef = useRef(null); // Track the modal window State
-  
+
   useClickOutSide(modalRef, isOpen, onClose);
 
   // Populate fields when modal opens
   useEffect(() => {
     if (isOpen && event?.type === "task") {
+      console.log("Raw dog:", event);
       setTitle(event.title || ""); // Pre-fill title field
       setDescription(event.description || ""); // Pre-fill description field
       setCompleted(event.completed || false); // Pre-fill completed state
 
-      // Set the current due date, leave time blank
       if (event.due_date) {
         const dueDateObj = new Date(event.due_date);
-        setDueDate(dueDateObj.toISOString().slice(0, 10)); // Populate due date (YYYY-MM-DD)
 
-        // Keep the time blank (require user to fill in)
-        setDueTime("");
+        // Extract local Date (YYYY-MM-DD)
+        const localYear = dueDateObj.getFullYear();
+        const localMonth = (dueDateObj.getMonth() + 1)
+          .toString()
+          .padStart(2, "0");
+        const localDay = dueDateObj.getDate().toString().padStart(2, "0");
+        const localDueDate = `${localYear}-${localMonth}-${localDay}`;
+        setDueDate(localDueDate);
+
+        // Extract local time (HH:MM)
+        const localHours = dueDateObj.getHours().toString().padStart(2, "0");
+        const localMinutes = dueDateObj
+          .getMinutes()
+          .toString()
+          .padStart(2, "0");
+        const dueTime = `${localHours}:${localMinutes}`;
+
+        setDueTime(dueTime);
       } else {
         setDueDate("");
+        setDueTime("");
       }
     }
   }, [isOpen, event]);
@@ -85,9 +101,12 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
 
     if (hasError) return;
 
-    // Combine the date and time inputs into a single ISO string
-    const localDueDate = new Date(`${dueDate}T${dueTime}`);
-    const formattedDueDate = localDueDate.toISOString(); // Convert to ISO format
+    // Combine the date and time inputs into a single local time Date object
+    const localDueDate = new Date(`${dueDate}T${dueTime}`); // This assumes the dueDate and dueTime are already local.
+    const formattedDueDate = new Date(
+      localDueDate.getTime() - localDueDate.getTimezoneOffset() * 60000
+    ).toISOString(); // Adjust to UTC for ISO format
+    console.log("Formatted Due Date Being Sent:", formattedDueDate);
 
     const updatedFields = {
       title: title.trim() ? title : event.title,
@@ -213,16 +232,14 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          <label>
-            <input
-              type="checkbox"
-              checked={completed} // Checkbox to mark as complete
-              onChange={(e) => {
-                setCompleted(e.target.checked);
-              }}
-            />
-            Mark as Completed
-          </label>
+          <input
+            type="checkbox"
+            checked={completed} // Checkbox to mark as complete
+            onChange={(e) => {
+              setCompleted(e.target.checked);
+            }}
+          />
+          <label>Mark as Completed</label>
           <button onClick={handleSave} disabled={isSaving}>
             Save
           </button>
