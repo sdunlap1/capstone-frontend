@@ -62,8 +62,9 @@ const Calendar = () => {
           completed: task.completed,
           type: "task",
           allDay: false,
-          classNames: ["task-event", task.completed ? "completed-task" : "open-task"],
+          classNames: [task.completed ? "completed-task" : "open-task"],
         }));
+        console.log("Task Events:", taskEvents);
         return taskEvents;
       } else {
         console.error("Tasks is not an array or is undefined:", tasks);
@@ -99,7 +100,7 @@ const Calendar = () => {
           completed: project.completed,
           type: "project",
           project_id: project.project_id,
-          classNames: ["project-event", project.completed ? "completed-project" : "open-project"],
+          classNames: [project.completed ? "completed-project" : "open-project"],
         }));
         return projectEvents;
       } else {
@@ -117,6 +118,7 @@ const Calendar = () => {
     // Clear events before fetching new ones
     const taskEvents = await fetchTasks();
     const projectEvents = await fetchProjects();
+    console.log("Task Events:", taskEvents);
 
     // Set fresh events directly (without appending)
     setEvents([...taskEvents, ...projectEvents]);
@@ -168,11 +170,10 @@ const Calendar = () => {
 
     if (extendedProps.type === "task") {
       // Ensure dates are properly handled
-      const formattedDueDate = start ? start.toLocaleDateString("en-US") : "";
       setSelectedEvent({
         task_id: id.replace("task-", ""), // Extract task ID
         title: title || "", // Pre-fill the task title
-        due_date: formattedDueDate,
+        due_date: start?.toISOString() || "",
         completed: extendedProps.completed ?? false,
         ...extendedProps, // Include other props like description
       });
