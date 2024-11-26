@@ -51,30 +51,29 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
     if (hasError) return;
 
     // Get today's date in Los Angeles timezone, formatted as YYYY-MM-DD
-    const today = new Date()
-      .toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" })
-      .slice(0, 10);
+    // //const today = new Date()
+    //  .toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" })
+    //  .slice(0, 10);
 
     // Parse selected due date in local timezone, adjusting for time difference
-    const selectedDueDate = new Date(`${dueDate}T${dueTime || "00:00"}`)
-      .toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" })
-      .slice(0, 10);
+    // const selectedDueDate = new Date(`${dueDate}T${dueTime || "00:00"}`)
+    //  .toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" })
+    //  .slice(0, 10);
 
-    console.log("Today's date:", today); // Debugging statement
-    console.log("Selected dueDate:", selectedDueDate); // Debugging statement
+    const localDueDate = new Date(`${dueDate}T${dueTime}`);
+    const formattedDueDate = localDueDate.toISOString();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
     // Check if the selected due date is in the past
-    if (selectedDueDate < today) {
+    if (localDueDate < today) {
       alert("Warning: The due date is in the past.");
       // Still allow saving, just showing the warning
     }
 
     try {
       setIsSaving(true); // Set cooldown
-      // Format the due date to include time
-      const localDueDate = new Date(`${dueDate}T${dueTime}`);
-      const formattedDueDate = localDueDate.toISOString(); // Converts to full ISO format for database
-
+      
       await axiosInstance.post(
         "/tasks",
         {
