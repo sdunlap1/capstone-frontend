@@ -16,60 +16,56 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
   const [isSaving, setIsSaving] = useState(false);
 
   const modalRef = useRef(null);
-  
+
   useClickOutSide(modalRef, isOpen, onClose);
 
   const handleSave = async () => {
     if (isSaving) return;
-    let hasError = false;
-
-    // Clear previous error messages
-    setNameError(false);
-    setStartDateError(false);
-    setDueDateError(false);
-
-    // Check if name is empty
-    if (!name.trim()) {
-      setNameError(true);
-      hasError = true;
-    }
-
-    // Check for empty Start Date
-    if (!startDate) {
-      setStartDateError(true);
-      hasError = true;
-    }
-
-    // Check for End Date
-    if (!dueDate) {
-      setDueDateError(true);
-      hasError = true;
-    }
-
-    if (hasError) return;
-
-    // Get today's date for comparison (formatted as YYYY-MM-DD)
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    // Simply use the date as-is without forcing to UTC
-    const formattedStartDate = new Date(startDate + "T12:00:00"); // Local time
-    const formattedDueDate = new Date(dueDate + "T12:00:00"); // Local time
-
-    // Check if due date is in the past
-    if (dueDate < today) {
-      alert("Warning: End date is in the past.");
-    }
-
-    // Check if due date is before start date
-    if (dueDate < startDate) {
-      alert("The due date cannot be earlier than the start date.");
-      return; // Prevent saving if this condition is true
-    }
 
     try {
+      let hasError = false;
+
+      // Clear previous error messages
+      setNameError(false);
+      setStartDateError(false);
+      setDueDateError(false);
+
+      // Check if name is empty
+      if (!name.trim()) {
+        setNameError(true);
+        hasError = true;
+      }
+
+      // Check for empty Start Date
+      if (!startDate) {
+        setStartDateError(true);
+        hasError = true;
+      }
+
+      // Check for End Date
+      if (!dueDate) {
+        setDueDateError(true);
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      // Get today's date for comparison (formatted as YYYY-MM-DD)
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // Simply use the date as-is without forcing to UTC
+      const formattedStartDate = new Date(startDate + "T12:00:00"); // Local time
+      const formattedDueDate = new Date(dueDate + "T12:00:00"); // Local time
+
+      // Check if due date is before start date
+      if (formattedDueDate < formattedStartDate) {
+        alert("The due date cannot be earlier than the start date.");
+        return; // Prevent saving if this condition is true
+      }
+
       setIsSaving(true);
-      await axiosInstance.post(
+      const response = await axiosInstance.post(
         "/projects",
         {
           name,
@@ -83,6 +79,17 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
           },
         }
       );
+      // Check if due date is in the past
+      const projectId = response.data.project.project_id;
+      const notificationKey = `notifiedPastDate_${projectId}`;
+
+      if (
+        !localStorage.getItem(notificationKey) &&
+        formattedDueDate < today
+      ) {
+        alert("Warning: End date is in the past.");
+        localStorage.setItem(notificationKey, "true");
+      }
 
       onProjectAdded(); // Refresh the calendar
       setSavedMessage(true);
@@ -121,11 +128,11 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
           ref={modalRef}
           onClick={(e) => e.stopPropagation()}
         >
+          <h2>Add New Project</h2>
           {/* Saved Message */}
           {savedMessage && (
             <div className="saved-message">Project saved successfully!</div>
           )}
-          <h2>Add New Project</h2>
           {nameError && (
             <span className="error-text">Project name is required</span>
           )}
@@ -134,7 +141,7 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
             placeholder="Project Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className={`input-field ${nameError ? "input-error" : ""}`}
+            className={nameError ? "input-error" : undefined}
           />
           <label>Start Date</label>
           {startDateError && (
@@ -145,7 +152,7 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
             placeholder="Start Date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className={`input-field ${startDateError ? "input-error" : ""}`}
+            className={startDateError ? "input-error" : undefined}
           />
           <label>End Date</label>
           {dueDateError && (
@@ -156,7 +163,7 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
             placeholder="Due Date"
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
-            className={`input-field ${dueDateError ? "input-error" : ""}`}
+            className={dueDateError ? "input-error" : undefined}
           />
           <label>Description</label>
           <textarea
