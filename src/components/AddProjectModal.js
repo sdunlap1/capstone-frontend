@@ -72,6 +72,7 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
           description,
           start_date: formattedStartDate, // Send as ISO string
           due_date: formattedDueDate, // Send as ISO string
+          notified_past_due: formattedDueDate < today,
         },
         {
           headers: {
@@ -80,15 +81,8 @@ const AddProjectModal = ({ isOpen, onClose, onProjectAdded }) => {
         }
       );
       // Check if due date is in the past
-      const projectId = response.data.project.project_id;
-      const notificationKey = `notifiedPastDate_${projectId}`;
-
-      if (
-        !localStorage.getItem(notificationKey) &&
-        formattedDueDate < today
-      ) {
+      if (formattedDueDate < today) {
         alert("Warning: End date is in the past.");
-        localStorage.setItem(notificationKey, "true");
       }
 
       onProjectAdded(); // Refresh the calendar
