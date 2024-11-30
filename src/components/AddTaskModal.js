@@ -50,16 +50,6 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
 
     if (hasError) return;
 
-    // Get today's date in Los Angeles timezone, formatted as YYYY-MM-DD
-    // //const today = new Date()
-    //  .toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" })
-    //  .slice(0, 10);
-
-    // Parse selected due date in local timezone, adjusting for time difference
-    // const selectedDueDate = new Date(`${dueDate}T${dueTime || "00:00"}`)
-    //  .toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" })
-    //  .slice(0, 10);
-
     const localDueDate = new Date(`${dueDate}T${dueTime}`);
     const formattedDueDate = localDueDate.toISOString();
     const today = new Date();
