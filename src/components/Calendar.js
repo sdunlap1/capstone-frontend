@@ -6,11 +6,11 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import tippy from "tippy.js";
-import 'tippy.js/dist/backdrop.css';
-import 'tippy.js/animations/shift-away.css';
-import 'tippy.js/themes/light.css';
-import 'tippy.js/themes/light-border.css';
-import 'tippy.js/dist/border.css';
+import "tippy.js/dist/backdrop.css";
+import "tippy.js/animations/shift-away.css";
+import "tippy.js/themes/light.css";
+import "tippy.js/themes/light-border.css";
+import "tippy.js/dist/border.css";
 import "tippy.js/dist/tippy.css";
 import axiosInstance from "../api/axiosInstance";
 import useAuth from "../hooks/useAuth";
@@ -100,7 +100,10 @@ const Calendar = () => {
           completed: project.completed,
           type: "project",
           project_id: project.project_id,
-          classNames: [project.completed ? "completed-project" : "open-project"],
+          notified_past_due: project.notified_past_due,
+          classNames: [
+            project.completed ? "completed-project" : "open-project",
+          ],
         }));
         return projectEvents;
       } else {
@@ -197,6 +200,7 @@ const Calendar = () => {
       setIsProjectModalOpen(true); // Open EditProjectModal
     }
   };
+
   const handleEventResize = async (resizeInfo) => {
     const { event } = resizeInfo;
 
@@ -214,25 +218,28 @@ const Calendar = () => {
     const originalEndDate = new Date(event.extendedProps.end_date);
     originalEndDate.setHours(0, 0, 0, 0); // Set to midnight for accurate comparison
 
-    // Check if the original start date was in the future
-    // AND the new start date is in the past
+    // Check if the original end date was in the future
+    // AND the new end date is in the past
     // BUT only show the alert if the end date is not already in the past
     if (
-      originalStartDate >= today && // The original start date was in the future
-      updatedStart < today && // The new start date is in the past
-      originalEndDate >= today // But the original end date was still in the future
+      !event.extendedProps.notified_past_due && // Only show alert if not already notified
+      updatedEnd < today
     ) {
-      alert("Warning: The new start date is in the past.");
+      alert("Warning: The new end date is in the past.");
       // Allow the resize, just show the warning once
     }
-
+    const notifiedPastDue = updatedEnd < today;
     const projectId = event.extendedProps.project_id;
 
     try {
       await axiosInstance.put(`/projects/${projectId}`, {
         start_date: updatedStart,
         due_date: updatedEnd,
+        notified_past_due: notifiedPastDue,
       });
+      
+      event.setExtendedProp("notified_past_due", notifiedPastDue);
+      
       alert("Project dates updated successfully!");
       fetchEvents();
     } catch (error) {
@@ -257,10 +264,12 @@ const Calendar = () => {
     originalStartDate.setHours(0, 0, 0, 0); // Also set this to midnight for accurate comparison
 
     // Check if the original start date was in the future, and the new start date is in the past
-    if (originalStartDate >= today && newStartDate < today) {
-      alert("Warning: The new date is in the past.");
+    if (!extendedProps.notified_past_due && newEndDate < today) {
+      alert("Warning: The end date is in the past.");
       // Allow the drop, but just show the warning
     }
+    
+    const notifiedPastDue = newEndDate < today;
 
     try {
       if (extendedProps.type === "task") {
@@ -270,6 +279,7 @@ const Calendar = () => {
             title,
             due_date: newStartDate,
             description: extendedProps.description,
+            notified_past_due: notifiedPastDue,
           },
           {
             headers: {
@@ -286,6 +296,7 @@ const Calendar = () => {
             start_date: newStartDate,
             due_date: newEndDate,
             description: extendedProps.description,
+            notified_past_due: notifiedPastDue,
           },
           {
             headers: {
@@ -293,6 +304,9 @@ const Calendar = () => {
             },
           }
         );
+
+        eventDropInfo.event.setExtendedProp("notified_past_due", notifiedPastDue);
+
         alert("Project updated successfully!");
       }
     } catch (error) {
@@ -533,7 +547,7 @@ const Calendar = () => {
                 <div>
                   <div>{day}</div>
                   <div>{date}</div>
-                  </div>
+                </div>
               );
             },
           },
