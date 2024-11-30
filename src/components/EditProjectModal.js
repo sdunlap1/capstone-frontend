@@ -101,23 +101,20 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
     }
 
     // Get the current date (today) and log it for debugging
-    const today = new Date().toISOString().slice(0, 10); // Format as YYYY-MM-DD
+    const today = new Date(); // Format as YYYY-MM-DD
+    today.setHours(0, 0, 0, 0);
+
+    // ************** NOT SURE THIS IS REALLY NEEDED ********************
 
     // Safeguard: Make sure originalEndDate is available and valid
-    const originalEndDate = event.end ? event.end.slice(0, 10) : today;
+    // const originalEndDate = event.end ? event.end.slice(0, 10) : today;
 
     // Format the new end date selected by the user
-    const newEndDate = new Date(endDate)
-      .toLocaleDateString("en-US", { timeZone: "America/Los_Angeles" })
-      .slice(0, 10);
+    // const newEndDate = new Date(endDate)
+    //   .toLocaleDateString("en-US", { timeZone: "America/Los_Angeles" })
+    //   .slice(0, 10);
 
-    // Only show the alert if:
-    // 1. The project's original end date was in the future
-    // 2. The new selected end date is in the past
-    if (!localStorage.getItem("notifiedPastDate") && selectedEndDate < today) {
-      alert("Warning: End date is in the past.");
-      localStorage.setItem("notifiedPastDate", "true");
-    }
+    // ***********************************************************************
 
     try {
       setIsSaving(true);
@@ -133,7 +130,16 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
         start_date: formattedStartDate,
         due_date: formattedEndDate,
         completed,
+        notified_past_due: event.notified_past_due,
       };
+
+      // Adjust `notified_past_due` based on new end date
+      if (selectedEndDate >= today) {
+        updatedFields.notified_past_due = false;
+      } else if (!event.notified_past_due || updatedFields.notified_past_due === false) {
+        alert("Warning: End date is in the past.");
+        updatedFields.notified_past_due = true;
+      }
 
       await axiosInstance.put(`/projects/${event.project_id}`, updatedFields, {
         headers: {
