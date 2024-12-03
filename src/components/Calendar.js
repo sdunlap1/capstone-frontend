@@ -366,6 +366,7 @@ const Calendar = () => {
   const renderEventContent = (eventInfo) => (
     <>
       <b>{eventInfo.timeText}</b>
+      &nbsp;&nbsp;
       <i>{eventInfo.event.title}</i>
     </>
   );
