@@ -52,16 +52,17 @@ const Calendar = () => {
       });
 
       const tasks = response.data.tasks;
-
+      console.log("Tasks from the backend.", tasks);
       if (Array.isArray(tasks)) {
         const taskEvents = tasks.map((task) => ({
           id: `task-${task.task_id}`,
           title: task.title,
-          start: task.due_date,
+          start: new Date(`${task.due_date}Z`),
           description: task.description || "",
           completed: task.completed,
           type: "task",
           allDay: false,
+          notified_past_due: task.notified_past_due,
           classNames: [task.completed ? "completed-task" : "open-task"],
         }));
         console.log("Task Events:", taskEvents);
@@ -121,7 +122,6 @@ const Calendar = () => {
     // Clear events before fetching new ones
     const taskEvents = await fetchTasks();
     const projectEvents = await fetchProjects();
-    console.log("Task Events:", taskEvents);
 
     // Set fresh events directly (without appending)
     setEvents([...taskEvents, ...projectEvents]);
@@ -186,9 +186,6 @@ const Calendar = () => {
       const formattedStartDate = start ? start.toLocaleDateString("en-US") : ""; // U.S. format MM/DD/YYYY
       const formattedEndDate = end ? end.toLocaleDateString("en-US") : ""; // U.S. format MM/DD/YYYY
 
-      console.log("Formatted start date:", formattedStartDate);
-      console.log("Formatted end date:", formattedEndDate);
-
       setSelectedEvent({
         project_id: id.replace("project-", ""), // Extract project ID
         title: title || "", // Pre-fill project name
@@ -237,9 +234,9 @@ const Calendar = () => {
         due_date: updatedEnd,
         notified_past_due: notifiedPastDue,
       });
-      
+
       event.setExtendedProp("notified_past_due", notifiedPastDue);
-      
+
       alert("Project dates updated successfully!");
       fetchEvents();
     } catch (error) {
@@ -253,31 +250,42 @@ const Calendar = () => {
   const handleEventDrop = async (eventDropInfo) => {
     const { id, title, extendedProps } = eventDropInfo.event;
     const newStartDate = eventDropInfo.event.start;
-    const newEndDate = eventDropInfo.event.end;
+    const newEndDate = eventDropInfo.event.end || newStartDate;
+
+    // Convert Task due_date to UTC for backend
+    const utcStartDate = newStartDate.toISOString();
+    const utcEndDate = newEndDate.toISOString();
 
     // Get today's date (set to midnight)
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Set to midnight for accurate comparison
 
-    // Get the original start date from extendedProps (this is the original due date before the drop)
-    const originalStartDate = new Date(extendedProps.due_date);
-    originalStartDate.setHours(0, 0, 0, 0); // Also set this to midnight for accurate comparison
+    const notifiedPastDue = new Date(utcEndDate) < today;
+
+    // Log key variables for debugging
+    console.log("=== Drag and Drop Debugging ===");
+    console.log("Event ID:", id);
+    console.log("Title:", title);
+    console.log("New Start Date:", newStartDate);
+    console.log("New End Date:", newEndDate);
+    console.log("Today's Date (midnight):", today);
+    console.log("Original Notified Past Due:", extendedProps.notified_past_due);
+    console.log("Calculated Notified Past Due:", notifiedPastDue);
 
     // Check if the original start date was in the future, and the new start date is in the past
-    if (!extendedProps.notified_past_due && newEndDate < today) {
+    if (!extendedProps.notified_past_due && notifiedPastDue) {
       alert("Warning: The end date is in the past.");
       // Allow the drop, but just show the warning
     }
-    
-    const notifiedPastDue = newEndDate < today;
 
     try {
       if (extendedProps.type === "task") {
+        console.log("Updating Task...");
         await axiosInstance.put(
           `/tasks/${id.replace("task-", "")}`,
           {
             title,
-            due_date: newStartDate,
+            due_date: utcStartDate,
             description: extendedProps.description,
             notified_past_due: notifiedPastDue,
           },
@@ -287,6 +295,7 @@ const Calendar = () => {
             },
           }
         );
+        console.log("Task Updated Successfully");
         alert("Task updated successfully!");
       } else if (extendedProps.type === "project") {
         await axiosInstance.put(
@@ -305,16 +314,16 @@ const Calendar = () => {
           }
         );
 
-        eventDropInfo.event.setExtendedProp("notified_past_due", notifiedPastDue);
-
         alert("Project updated successfully!");
       }
+      eventDropInfo.event.setExtendedProp("notified_past_due", notifiedPastDue);
     } catch (error) {
       console.error("Error updating event:", error);
       alert("Failed to update the event. Please try again.");
       eventDropInfo.revert();
     }
   };
+
   // Handles when a user hovers over a task or project
   const handleEventMouseEnter = (info) => {
     const { title, extendedProps, start, end } = info.event;
@@ -402,7 +411,6 @@ const Calendar = () => {
         const dayString = isDayHeaderClicked
           .closest("th")
           .getAttribute("data-date"); // Get the date
-        console.log("Day header clicked, navigating to:", dayString);
         calendarApi.changeView("timeGridDay", dayString);
       }
 
@@ -413,14 +421,11 @@ const Calendar = () => {
 
       if (eventTarget) {
         if (eventTarget.classList.contains("fc-event")) {
-          console.log("Event clicked:", eventTarget);
           // Custom logic for event clicks can go here
         } else if (eventTarget.classList.contains("fc-timegrid-slot")) {
-          console.log("Time slot clicked:", eventTarget);
           // Custom logic for time grid slot clicks can go here
         }
       } else {
-        console.log("Non-event area clicked.");
       }
     };
 
@@ -602,15 +607,6 @@ const Calendar = () => {
           // Week and 4-day views: Only trigger if the user clicks on the day header
           const isDayHeaderClicked = targetElement.closest(
             ".fc-col-header-cell-cushion"
-          );
-
-          // Log for debugging
-          console.log("Current view type:", calendarApi.view.type);
-          console.log("Clicked element:", targetElement);
-          console.log("isDayNumberClicked (Month view):", isDayNumberClicked);
-          console.log(
-            "isDayHeaderClicked (Week/4-Day view):",
-            isDayHeaderClicked
           );
 
           // Navigate to day view based on the specific conditions for each view
