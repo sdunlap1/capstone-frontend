@@ -122,6 +122,15 @@ Start Fullcalendar overrides
   transition: background-color 0.5s ease;
 }
 
+/* Add this to stop bleeding in month view */
+.fc-daygrid-event i {
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add "..." to indicate truncated text */
+  display: inline-block; /* Ensure truncation works properly */
+  max-width: 100%; /* Prevent text from exceeding its container */
+}
+
 /* =======================
 End Fullcalendar overrides
 ======================== */
