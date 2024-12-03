@@ -24,6 +24,7 @@ const EditProjectModal = ({ isOpen, event, onClose, onProjectUpdated }) => {
   
   useEffect(() => {
     if (isOpen && event?.type === "project") {
+      console.log("Raws dog:", event);
       // Pre-fill the fields
       setName(event.title || "");
       setDescription(event.description || "");
