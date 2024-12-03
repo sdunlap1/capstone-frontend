@@ -101,11 +101,10 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
 
     if (hasError) return;
 
-    // Combine the date and time inputs into a single local time Date object
-    const localDueDate = new Date(`${dueDate}T${dueTime}`); // This assumes the dueDate and dueTime are already local.
-    const formattedDueDate = new Date(
-      localDueDate.getTime() - localDueDate.getTimezoneOffset() * 60000
-    ).toISOString(); // Adjust to UTC for ISO format
+    // Combine dueDate and dueTime to UTC
+    const localDueDate = new Date(`${dueDate}T${dueTime}`); // Combine input date and time
+    const formattedDueDate = new Date(`${dueDate}T${dueTime}`).toISOString(); // Local to UTC
+
     console.log("Formatted Due Date Being Sent:", formattedDueDate);
 
     const updatedFields = {
@@ -113,25 +112,24 @@ const EditTaskModal = ({ isOpen, event, onClose, onTaskUpdated }) => {
       description: description.trim() ? description : event.description,
       due_date: formattedDueDate, // Send full date and time
       completed,
+      notified_past_due: event.notified_past_due,
     };
 
-    // Get today's date in Los Angeles timezone
-    const today = new Date()
-      .toLocaleDateString("en-US", { timeZone: "America/Los_Angeles" })
-      .slice(0, 10);
-
-    // Format the current due date (before edit) and the new one the user selected
-    const originalDueDate = event.due_date.slice(0, 10);
-    const newDueDate = new Date(dueDate)
-      .toLocaleDateString("en-US", { timeZone: "America/Los_Angeles" })
-      .slice(0, 10);
+    // Get today's date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
     // Only show the alert if:
     // 1. The task's original due date was in the future
     // 2. The new selected due date is in the past
-    if (originalDueDate >= today && newDueDate < today) {
+    if (localDueDate >= today) {
+      updatedFields.notified_past_due = false;
+    } else if (
+      !event.notified_past_due ||
+      updatedFields.notified_past_due === false
+    ) {
       alert("Warning: Due date is in the past.");
-      // Allow saving, just showing a warning
+      updatedFields.notified_past_due = true;
     }
 
     try {
