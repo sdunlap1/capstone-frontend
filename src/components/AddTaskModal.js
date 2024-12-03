@@ -68,8 +68,9 @@ const AddTaskModal = ({ isOpen, onClose, onTaskAdded, selectedDate }) => {
         "/tasks",
         {
           title,
-          due_date: formattedDueDate, // Send combined due date and time
           description,
+          due_date: formattedDueDate, // Send combined due date and time
+          notified_past_due: formattedDueDate < today,
         },
         {
           headers: {
