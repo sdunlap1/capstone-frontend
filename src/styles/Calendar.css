@@ -122,13 +122,16 @@ Start Fullcalendar overrides
   transition: background-color 0.5s ease;
 }
 
-/* Add this to stop bleeding in month view */
-.fc-daygrid-event i {
+/* Add this to stop bleeding in month view and style the event */
+.cal-styling {
   white-space: nowrap; /* Prevent text from wrapping */
   overflow: hidden; /* Hide overflowing text */
   text-overflow: ellipsis; /* Add "..." to indicate truncated text */
   display: inline-block; /* Ensure truncation works properly */
   max-width: 100%; /* Prevent text from exceeding its container */
+  font-size: .9em;
+  padding-left: .2em;
+  padding-top: .2em;
 }
 
 /* =======================
@@ -360,7 +363,7 @@ Create the cursor when clicking into day view
 ############################### */
 
 /* ======================
-     My Tippy Themes not working. Will come back to it late
+My Tippy Themes not working. Will come back to it late
 ======================= */
 .tippy-box[data-theme~="mylight"] {
   background-color: rgba(255, 255, 255, 0.5);
