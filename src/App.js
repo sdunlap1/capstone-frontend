@@ -11,6 +11,7 @@ import useAuth from './hooks/useAuth';
 import checkTokenExpiration from './components/checkTokenExpiration';
 import './styles/App.css';
 import './styles/Calendar.css';
+// import './styles/mobile.css';
 
 const HomePage = () => (
   <div>
