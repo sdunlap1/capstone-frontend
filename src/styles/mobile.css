@@ -1,0 +1,85 @@
+/* Mobile styles for the toolbar */
+@media (max-width: 768px) {
+  .fc-toolbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .fc-toolbar-title {
+    font-size: 1.2em; /* Smaller title */
+  }
+
+  .fc-button-group .fc-button {
+    padding: 8px 15px; /* Smaller padding */
+    font-size: 0.9em; /* Smaller font size */
+  }
+}
+@media (max-width: 768px) {
+  .fc-col-header-cell .fc-col-header-cell-cushion {
+    font-size: 0.8em; /* Shrink day headers */
+    padding: 5px; /* Reduce padding */
+  }
+
+  .fc-daygrid-day-events {
+    margin: 0 2px; /* Less margin between events */
+  }
+
+  .fc-daygrid-event {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Prevent overflowing text */
+    font-size: 0.85em; /* Shrink event font size */
+  }
+
+  .fc-view-harness {
+    padding: 5px; /* Reduce padding around the calendar */
+  }
+}
+@media (max-width: 768px) {
+  .modal {
+    width: 90%;
+    max-width: 350px; /* Ensure the modal doesn't stretch too wide */
+  }
+
+  .modal-content {
+    padding: 10px; /* Reduce padding */
+  }
+
+  .modal-content h2 {
+    font-size: 1.2em; /* Smaller heading */
+  }
+
+  .modal-content button {
+    font-size: 0.9em;
+    padding: 8px 10px; /* Adjust for mobile */
+  }
+}
+@media (max-width: 768px) {
+  .search-container {
+    width: 95%; /* Stretch to fit the screen */
+    margin: 10px auto; /* Center with less margin */
+  }
+
+  .search-container input {
+    font-size: 0.9em; /* Smaller font */
+  }
+
+  .search-results {
+    max-height: 200px; /* Limit height for smaller screens */
+  }
+}
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    height: auto; /* Adjust height */
+  }
+
+  .nav-links {
+    flex-direction: column; /* Stack links vertically */
+    gap: 10px; /* Add spacing between links */
+  }
+
+  .hamburger {
+    display: block; /* Show hamburger menu */
+  }
+}
