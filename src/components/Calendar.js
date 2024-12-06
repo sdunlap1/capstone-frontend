@@ -364,11 +364,11 @@ const Calendar = () => {
 
   // Render custom content for calendar events (tasks/projects)
   const renderEventContent = (eventInfo) => (
-    <>
+    <div className="cal-styling">
       <b>{eventInfo.timeText}</b>
-      &nbsp;&nbsp;
+      &nbsp;
       <i>{eventInfo.event.title}</i>
-    </>
+    </div>
   );
   useEffect(() => {
     const handleClickOutside = (event) => {
